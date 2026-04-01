@@ -16,6 +16,7 @@ interface CycleHomeProps {
   phase: Phase;
   steps: number | null;
   onStepsChange: (steps: number | null) => void;
+  onOpenSettings: () => void;
 }
 
 const phaseLabels: Record<Phase, string> = {
@@ -31,12 +32,14 @@ export function CycleHome({
   phase,
   steps,
   onStepsChange,
+  onOpenSettings,
 }: CycleHomeProps) {
   return (
     <div style={{ padding: "24px 16px 32px" }}>
       {/* Settings gear — top right */}
       <div style={{ display: "flex", justifyContent: "flex-end", marginBottom: 8 }}>
         <button
+          onClick={onOpenSettings}
           style={{
             background: "none",
             border: "none",
