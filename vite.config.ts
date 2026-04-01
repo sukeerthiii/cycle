@@ -1,0 +1,31 @@
+import { defineConfig } from "vite";
+import react from "@vitejs/plugin-react";
+import { VitePWA } from "vite-plugin-pwa";
+import path from "path";
+
+export default defineConfig({
+  plugins: [
+    react(),
+    VitePWA({
+      registerType: "autoUpdate",
+      manifest: {
+        name: "Cycle",
+        short_name: "Cycle",
+        description: "Phase-aware fitness log",
+        theme_color: "#1C1917",
+        background_color: "#1C1917",
+        display: "standalone",
+        orientation: "portrait",
+        icons: [
+          { src: "/icons/icon-192.png", sizes: "192x192", type: "image/png" },
+          { src: "/icons/icon-512.png", sizes: "512x512", type: "image/png" },
+        ],
+      },
+    }),
+  ],
+  resolve: {
+    alias: {
+      "@": path.resolve(__dirname, "./src"),
+    },
+  },
+});
