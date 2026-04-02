@@ -95,7 +95,7 @@ export function StepsGraph({ periodStartDate, cycleLength, periodLength }: Steps
 
       {/* Bar chart */}
       <div style={{ display: "flex", alignItems: "flex-end", gap: 6, height: 120 }}>
-        {days.map((day, i) => {
+        {days.map((day) => {
           const height = maxSteps > 0 ? (day.steps / maxSteps) * 100 : 0;
           const targetHeight = (day.target / maxSteps) * 100;
           return (

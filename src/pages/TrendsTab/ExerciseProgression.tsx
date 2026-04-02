@@ -1,5 +1,5 @@
 import { useState, useMemo } from "react";
-import { LineChart, Line, XAxis, YAxis, ResponsiveContainer, ReferenceLine } from "recharts";
+import { LineChart, Line, XAxis, YAxis, ResponsiveContainer } from "recharts";
 import { Card } from "../../design/Card";
 import { useDailyLogs, useExercises } from "../../db/hooks";
 import type { Phase, WorkoutSection } from "../../models/types";

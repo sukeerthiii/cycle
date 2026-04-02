@@ -5,7 +5,6 @@ import type {
   MovementPattern,
   SuggestedWorkout,
   SuggestedExercise,
-  ExerciseEntry,
 } from "../models/types";
 import { profile } from "../models/profile";
 import { builtInExercises } from "../models/exercises";
@@ -244,6 +243,7 @@ function buildPlannedSuggestion(
     yoga: "Yoga",
     mobility: "Mobility / Stretches",
     walk: "Walk",
+    cardio: "Cardio",
   };
   return {
     type,

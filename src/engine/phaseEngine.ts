@@ -23,7 +23,6 @@ export function calculatePhase(
 
   const ovulatoryStart = Math.round(cycleLength * 0.45);
   const ovulatoryEnd = ovulatoryStart + 2;
-  const lutealStart = ovulatoryEnd + 1;
 
   let phase: Phase;
   if (cycleDay <= periodLength) {
