@@ -237,7 +237,6 @@ function SetRow({
       ) : (
         <StepperField value={set.weight ?? 0} onChange={(v) => onUpdate({ weight: v })}
           step={WEIGHT_INCREMENT} min={0} color={color}
-          onLongPress={() => onUpdate({ isBodyweight: true, weight: null })}
         />
       )}
 
@@ -249,19 +248,53 @@ function SetRow({
 }
 
 function StepperField({
-  value, onChange, step, min, onLongPress, color,
+  value, onChange, step, min, color,
 }: {
   value: number; onChange: (v: number) => void; step: number; min: number;
-  onLongPress?: () => void; color: string;
+  color: string;
 }) {
+  const [editing, setEditing] = useState(false);
+  const [draft, setDraft] = useState("");
+
+  function startEdit() {
+    setDraft(value.toString());
+    setEditing(true);
+  }
+
+  function commitEdit() {
+    const parsed = parseFloat(draft);
+    if (!isNaN(parsed) && parsed >= min) {
+      onChange(parsed);
+    }
+    setEditing(false);
+  }
+
   return (
     <div style={{ display: "flex", alignItems: "center", justifyContent: "center", background: "var(--bg-primary)", borderRadius: "var(--radius-sm)", gap: 2 }}>
       <button onClick={() => onChange(Math.max(min, value - step))} style={stepBtn(color)}>−</button>
-      <span onClick={onLongPress} style={{
-        fontFamily: "var(--font-body)", fontSize: 15, fontWeight: 500, color: "var(--text-primary)",
-        minWidth: 36, textAlign: "center", cursor: onLongPress ? "pointer" : "default",
-        fontVariantNumeric: "tabular-nums", padding: "6px 0",
-      }}>{value}</span>
+      {editing ? (
+        <input
+          autoFocus
+          type="text"
+          inputMode="decimal"
+          value={draft}
+          onChange={(e) => setDraft(e.target.value)}
+          onBlur={commitEdit}
+          onKeyDown={(e) => { if (e.key === "Enter") commitEdit(); }}
+          style={{
+            fontFamily: "var(--font-body)", fontSize: 15, fontWeight: 500, color: "var(--text-primary)",
+            width: 44, textAlign: "center", background: "transparent", border: "none",
+            borderBottom: `2px solid ${color}`, outline: "none", padding: "4px 0",
+            fontVariantNumeric: "tabular-nums",
+          }}
+        />
+      ) : (
+        <span onClick={startEdit} style={{
+          fontFamily: "var(--font-body)", fontSize: 15, fontWeight: 500, color: "var(--text-primary)",
+          minWidth: 36, textAlign: "center", cursor: "pointer",
+          fontVariantNumeric: "tabular-nums", padding: "6px 0",
+        }}>{value}</span>
+      )}
       <button onClick={() => onChange(value + step)} style={stepBtn(color)}>+</button>
     </div>
   );

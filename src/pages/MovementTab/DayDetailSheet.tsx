@@ -98,6 +98,8 @@ export function DayDetailSheet({
         display: "flex",
         alignItems: "flex-end",
         justifyContent: "center",
+        touchAction: "none",
+        overscrollBehavior: "contain",
       }}
     >
       <motion.div
@@ -109,11 +111,12 @@ export function DayDetailSheet({
         style={{
           width: "100%",
           maxWidth: 420,
-          maxHeight: "70vh",
+          maxHeight: "75vh",
           overflowY: "auto",
+          WebkitOverflowScrolling: "touch",
           background: "var(--bg-primary)",
           borderRadius: "20px 20px 0 0",
-          padding: "24px 20px calc(24px + env(safe-area-inset-bottom))",
+          padding: `24px 20px calc(24px + var(--tab-bar-height) + env(safe-area-inset-bottom))`,
           boxShadow: "0 -4px 20px rgba(0,0,0,0.08)",
         }}
       >

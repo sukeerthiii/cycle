@@ -64,14 +64,17 @@ export function CycleHome({
           style={{
             background: "none",
             border: "none",
+            fontFamily: "var(--font-body)",
             color: "var(--text-tertiary)",
-            fontSize: 20,
+            fontSize: 13,
+            fontWeight: 500,
             cursor: "pointer",
-            padding: 4,
+            padding: "4px 0",
             marginTop: 4,
+            letterSpacing: "0.02em",
           }}
         >
-          ⚙
+          Settings
         </button>
       </div>
 

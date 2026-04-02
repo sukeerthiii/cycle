@@ -34,7 +34,7 @@ export function PatternChecklist({ patternsHit, phase }: PatternChecklistProps) 
         display: "block",
         marginBottom: 10,
       }}>
-        Weekly Split
+        Strength Weekly Split
       </span>
       <div style={{ display: "flex", gap: 12, justifyContent: "center" }}>
         {PATTERNS.map(({ pattern, label }) => {
