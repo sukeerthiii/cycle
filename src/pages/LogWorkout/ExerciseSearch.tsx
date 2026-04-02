@@ -1,14 +1,22 @@
 import { useState, useMemo } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useExercises } from "../../db/hooks";
-import type { Exercise, WorkoutType, MovementPattern } from "../../models/types";
+import type { Exercise, WorkoutType, MovementPattern, Phase } from "../../models/types";
 
 interface ExerciseSearchProps {
   category: WorkoutType;
   onSelect: (exercise: Exercise) => void;
   onCreateCustom: (name: string, pattern: MovementPattern | null) => void;
   onClose: () => void;
+  phase: Phase;
 }
+
+const phaseColorMap: Record<Phase, string> = {
+  menstrual: "var(--phase-menstrual)",
+  follicular: "var(--phase-follicular)",
+  ovulatory: "var(--phase-ovulatory)",
+  luteal: "var(--phase-luteal)",
+};
 
 const PATTERNS: { value: MovementPattern | null; label: string }[] = [
   { value: null, label: "Auto-detect" },
@@ -44,7 +52,9 @@ export function ExerciseSearch({
   onSelect,
   onCreateCustom,
   onClose,
+  phase,
 }: ExerciseSearchProps) {
+  const color = phaseColorMap[phase];
   const [query, setQuery] = useState("");
   const [showTagPicker, setShowTagPicker] = useState(false);
   const allExercises = useExercises();
@@ -179,7 +189,7 @@ export function ExerciseSearch({
               fontFamily: "var(--font-body)",
               fontSize: 16,
               fontWeight: 500,
-              color: "var(--accent)",
+              color,
               cursor: "pointer",
             }}
           >
@@ -260,7 +270,7 @@ export function ExerciseSearch({
                   >
                     <span>{label}</span>
                     {isInferred && (
-                      <span style={{ fontSize: 13, fontWeight: 400, color: "var(--accent)" }}>
+                      <span style={{ fontSize: 13, fontWeight: 400, color }}>
                         → {inferredPattern}
                       </span>
                     )}

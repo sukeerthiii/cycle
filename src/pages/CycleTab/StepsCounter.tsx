@@ -1,12 +1,22 @@
 import { useState, useRef } from "react";
 
+type Phase = "menstrual" | "follicular" | "ovulatory" | "luteal";
+
 interface StepsCounterProps {
   steps: number | null;
   target: number;
   onChange: (steps: number | null) => void;
+  phase: Phase;
 }
 
-export function StepsCounter({ steps, target, onChange }: StepsCounterProps) {
+const phaseColorMap: Record<Phase, string> = {
+  menstrual: "var(--phase-menstrual)",
+  follicular: "var(--phase-follicular)",
+  ovulatory: "var(--phase-ovulatory)",
+  luteal: "var(--phase-luteal)",
+};
+
+export function StepsCounter({ steps, target, onChange, phase }: StepsCounterProps) {
   const [editing, setEditing] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
 
@@ -53,12 +63,12 @@ export function StepsCounter({ steps, target, onChange }: StepsCounterProps) {
             onKeyDown={handleKeyDown}
             style={{
               fontFamily: "var(--font-display)",
-              fontSize: 28,
-              fontWeight: 400,
+              fontSize: 20,
+              fontWeight: 600,
               color: "var(--text-primary)",
               background: "transparent",
               border: "none",
-              borderBottom: "2px solid var(--accent)",
+              borderBottom: `2px solid ${phaseColorMap[phase]}`,
               textAlign: "center",
               width: 120,
               outline: "none",
@@ -66,10 +76,11 @@ export function StepsCounter({ steps, target, onChange }: StepsCounterProps) {
           />
         ) : (
           <span
-            className="display-heading"
             style={{
+              fontFamily: "var(--font-display)",
+              fontSize: 20,
+              fontWeight: 600,
               color: steps ? "var(--text-primary)" : "var(--text-tertiary)",
-              fontSize: 28,
             }}
           >
             {display}
@@ -78,8 +89,13 @@ export function StepsCounter({ steps, target, onChange }: StepsCounterProps) {
       </div>
 
       <div
-        className="body-caption"
-        style={{ marginTop: 4, color: "var(--text-secondary)" }}
+        style={{
+          fontFamily: "var(--font-body)",
+          fontSize: 12,
+          fontWeight: 400,
+          color: "var(--text-secondary)",
+          marginTop: 4,
+        }}
       >
         steps · {target.toLocaleString()} goal
       </div>
@@ -100,7 +116,7 @@ export function StepsCounter({ steps, target, onChange }: StepsCounterProps) {
           style={{
             height: "100%",
             width: `${progress * 100}%`,
-            background: "var(--accent)",
+            background: phaseColorMap[phase],
             borderRadius: 2,
             transition: "width 0.4s ease",
           }}

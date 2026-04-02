@@ -44,14 +44,14 @@ export function PhaseRing({ cycleDay, totalDays, phase, phaseName }: PhaseRingPr
         margin: "0 auto",
       }}
     >
-      {/* Glow */}
+      {/* Glow — larger, softer */}
       <div
         style={{
           position: "absolute",
-          inset: -20,
+          inset: -44,
           borderRadius: "50%",
-          background: `radial-gradient(circle, ${glow} 0%, transparent 70%)`,
-          filter: "blur(20px)",
+          background: `radial-gradient(circle, ${glow} 0%, ${glow} 30%, transparent 70%)`,
+          filter: "blur(38px)",
         }}
       />
 
@@ -95,16 +95,27 @@ export function PhaseRing({ cycleDay, totalDays, phase, phaseName }: PhaseRingPr
           flexDirection: "column",
           alignItems: "center",
           justifyContent: "center",
-          gap: 2,
+          gap: 0,
         }}
       >
+        <span style={{
+          fontFamily: "var(--font-body)",
+          fontSize: 10,
+          fontWeight: 500,
+          color: "var(--text-tertiary)",
+          letterSpacing: "0.06em",
+          textTransform: "uppercase",
+          marginBottom: 2,
+        }}>
+          Day
+        </span>
         <span
           className="display-hero"
           style={{ color: "var(--text-primary)", lineHeight: 1 }}
         >
           {cycleDay}
         </span>
-        <span className="display-phase" style={{ color }}>
+        <span className="display-phase" style={{ color, marginTop: 3 }}>
           {phaseName}
         </span>
       </div>

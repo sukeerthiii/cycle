@@ -39,6 +39,7 @@ export function Onboarding({ onComplete }: OnboardingProps) {
       justifyContent: "center",
       padding: "32px 24px",
       background: "var(--bg-primary)",
+      color: "var(--text-primary)",
     }}>
       <motion.div
         initial={{ opacity: 0, y: 20 }}
@@ -78,7 +79,7 @@ export function Onboarding({ onComplete }: OnboardingProps) {
               borderRadius: "var(--radius-md)",
               padding: "12px 16px",
               width: "100%",
-              colorScheme: "dark",
+              colorScheme: "light",
             }}
           />
         </Field>
@@ -92,7 +93,7 @@ export function Onboarding({ onComplete }: OnboardingProps) {
             width: "100%",
             padding: "14px",
             background: "var(--accent)",
-            color: "var(--bg-primary)",
+            color: "#FFFFFF",
             border: "none",
             borderRadius: "var(--radius-md)",
             fontFamily: "var(--font-body)",

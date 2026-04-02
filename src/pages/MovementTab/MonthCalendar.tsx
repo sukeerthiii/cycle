@@ -19,10 +19,17 @@ const MONTH_NAMES = [
 ];
 
 const phaseColors: Record<Phase, string> = {
-  menstrual: "var(--phase-menstrual-muted)",
-  follicular: "var(--phase-follicular-muted)",
-  ovulatory: "var(--phase-ovulatory-muted)",
-  luteal: "var(--phase-luteal-muted)",
+  menstrual: "rgba(196, 112, 90, 0.20)",
+  follicular: "rgba(139, 168, 136, 0.20)",
+  ovulatory: "rgba(212, 168, 67, 0.20)",
+  luteal: "rgba(155, 126, 155, 0.20)",
+};
+
+const phaseBorderColors: Record<Phase, string> = {
+  menstrual: "rgba(196, 112, 90, 0.35)",
+  follicular: "rgba(139, 168, 136, 0.35)",
+  ovulatory: "rgba(212, 168, 67, 0.35)",
+  luteal: "rgba(155, 126, 155, 0.35)",
 };
 
 function toISO(year: number, month: number, day: number): string {
@@ -121,7 +128,11 @@ export function MonthCalendar({
                   alignItems: "center",
                   justifyContent: "center",
                   background: phase ? phaseColors[phase] : "transparent",
-                  border: isToday ? "2px solid var(--accent)" : "none",
+                  border: isToday
+                    ? "2px solid var(--accent)"
+                    : phase
+                      ? `1px solid ${phaseBorderColors[phase]}`
+                      : "none",
                   borderRadius: "var(--radius-sm)",
                   cursor: "pointer",
                   WebkitTapHighlightColor: "transparent",

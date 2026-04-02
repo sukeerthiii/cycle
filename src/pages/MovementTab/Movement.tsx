@@ -13,6 +13,8 @@ interface MovementProps {
   onEditSection: (date: string, sectionIndex: number, section: WorkoutSection) => void;
   onDeleteSection: (date: string, sectionIndex: number) => void;
   onPlanWorkout: (date: string, type: WorkoutType, notes: string) => void;
+  onEditSteps: (date: string, currentSteps: number | null) => void;
+  onDeleteSteps: (date: string) => void;
 }
 
 function todayISO() {
@@ -35,7 +37,7 @@ function endOfWeekISO(): string {
   return d.toISOString().split("T")[0]!;
 }
 
-export function Movement({ onAddWorkout, onEditSection, onDeleteSection, onPlanWorkout }: MovementProps) {
+export function Movement({ onAddWorkout, onEditSection, onDeleteSection, onPlanWorkout, onEditSteps, onDeleteSteps }: MovementProps) {
   const [selectedDate, setSelectedDate] = useState<string | null>(null);
   const [viewMonth, setViewMonth] = useState(() => {
     const now = new Date();
@@ -107,7 +109,7 @@ export function Movement({ onAddWorkout, onEditSection, onDeleteSection, onPlanW
       />
 
       <div style={{ marginTop: 20 }}>
-        <PatternChecklist patternsHit={patternsHit} />
+        <PatternChecklist patternsHit={patternsHit} phase={getPhaseForDate(todayISO()) ?? "follicular"} />
       </div>
 
       <div style={{ marginTop: 24 }}>
@@ -126,6 +128,8 @@ export function Movement({ onAddWorkout, onEditSection, onDeleteSection, onPlanW
             onEditSection={(idx, section) => { setSelectedDate(null); onEditSection(selectedDate, idx, section); }}
             onDeleteSection={(idx) => onDeleteSection(selectedDate, idx)}
             onPlanWorkout={onPlanWorkout}
+            onEditSteps={onEditSteps}
+            onDeleteSteps={onDeleteSteps}
           />
         )}
       </AnimatePresence>

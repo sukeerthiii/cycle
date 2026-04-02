@@ -3,12 +3,21 @@ import { motion } from "framer-motion";
 import { useLatestCycleLog, updateCycleLog, useSetting, setSetting } from "../db/hooks";
 import { exportJSON, exportCSV, importJSON } from "../utils/export";
 import { db } from "../db/database";
+import type { Phase } from "../models/types";
 
 interface SettingsProps {
   onClose: () => void;
+  phase: Phase;
 }
 
-export function Settings({ onClose }: SettingsProps) {
+const phaseColorMap: Record<Phase, string> = {
+  menstrual: "var(--phase-menstrual)",
+  follicular: "var(--phase-follicular)",
+  ovulatory: "var(--phase-ovulatory)",
+  luteal: "var(--phase-luteal)",
+};
+
+export function Settings({ onClose, phase }: SettingsProps) {
   const latestCycle = useLatestCycleLog();
   const weightUnit = useSetting("weightUnit");
   const weightIncrement = useSetting("weightIncrement");
@@ -22,6 +31,7 @@ export function Settings({ onClose }: SettingsProps) {
   const pl = periodLength ?? latestCycle?.periodLength ?? 5;
   const unit = weightUnit?.value ?? "lb";
   const increment = weightIncrement?.value ?? "5";
+  const color = phaseColorMap[phase];
 
   async function saveCycleSettings() {
     if (!latestCycle?.id) return;
@@ -62,34 +72,34 @@ export function Settings({ onClose }: SettingsProps) {
         {/* Header */}
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 28 }}>
           <span className="display-heading">Settings</span>
-          <button onClick={onClose} style={closeBtnStyle}>Done</button>
+          <button onClick={onClose} style={{
+            background: "none",
+            border: "none",
+            fontFamily: "var(--font-body)",
+            fontSize: 16,
+            fontWeight: 600,
+            color,
+            cursor: "pointer",
+          }}>Done</button>
         </div>
 
         {/* Cycle settings */}
         <Section title="Cycle">
           <Row label="Cycle length (days)">
-            <Stepper value={cl} onChange={(v) => { setCycleLength(v); }} min={20} max={45} onBlur={saveCycleSettings} />
+            <Stepper value={cl} onChange={(v) => { setCycleLength(v); }} min={20} max={45} onBlur={saveCycleSettings} color={color} />
           </Row>
           <Row label="Period length (days)">
-            <Stepper value={pl} onChange={(v) => { setPeriodLength(v); }} min={2} max={10} onBlur={saveCycleSettings} />
+            <Stepper value={pl} onChange={(v) => { setPeriodLength(v); }} min={2} max={10} onBlur={saveCycleSettings} color={color} />
           </Row>
         </Section>
 
         {/* Units */}
         <Section title="Units">
           <Row label="Weight">
-            <Toggle
-              options={["lb", "kg"]}
-              value={unit}
-              onChange={(v) => setSetting("weightUnit", v)}
-            />
+            <Toggle options={["lb", "kg"]} value={unit} onChange={(v) => setSetting("weightUnit", v)} />
           </Row>
           <Row label="Weight increment">
-            <Toggle
-              options={["2.5", "5"]}
-              value={increment}
-              onChange={(v) => setSetting("weightIncrement", v)}
-            />
+            <Toggle options={["2.5", "5"]} value={increment} onChange={(v) => setSetting("weightIncrement", v)} />
           </Row>
         </Section>
 
@@ -97,10 +107,7 @@ export function Settings({ onClose }: SettingsProps) {
         <Section title="Data">
           <ActionButton label="Export as JSON" onClick={exportJSON} />
           <ActionButton label="Export as CSV" onClick={exportCSV} />
-          <ActionButton
-            label="Import backup"
-            onClick={() => fileRef.current?.click()}
-          />
+          <ActionButton label="Import backup" onClick={() => fileRef.current?.click()} />
           <input
             ref={fileRef}
             type="file"
@@ -109,7 +116,7 @@ export function Settings({ onClose }: SettingsProps) {
             style={{ display: "none" }}
           />
           {importMsg && (
-            <p className="body-caption" style={{ color: "var(--accent)", marginTop: 8 }}>
+            <p className="body-caption" style={{ color, marginTop: 8, padding: "0 16px" }}>
               {importMsg}
             </p>
           )}
@@ -179,23 +186,36 @@ function Stepper({
   min,
   max,
   onBlur,
+  color,
 }: {
   value: number;
   onChange: (v: number) => void;
   min: number;
   max: number;
   onBlur: () => void;
+  color: string;
 }) {
+  const btnStyle: React.CSSProperties = {
+    background: "var(--bg-primary)",
+    border: "none",
+    borderRadius: "var(--radius-sm)",
+    color,
+    fontSize: 18,
+    fontFamily: "var(--font-body)",
+    fontWeight: 600,
+    width: 32,
+    height: 32,
+    cursor: "pointer",
+    WebkitTapHighlightColor: "transparent",
+  };
+
   return (
     <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
-      <button
-        onClick={() => { onChange(Math.max(min, value - 1)); setTimeout(onBlur, 50); }}
-        style={stepBtnStyle}
-      >
+      <button onClick={() => { onChange(Math.max(min, value - 1)); setTimeout(onBlur, 50); }} style={btnStyle}>
         −
       </button>
       <span style={{
-        fontFamily: "var(--font-body)",
+        fontFamily: "var(--font-display)",
         fontSize: 16,
         fontWeight: 600,
         minWidth: 28,
@@ -204,10 +224,7 @@ function Stepper({
       }}>
         {value}
       </span>
-      <button
-        onClick={() => { onChange(Math.min(max, value + 1)); setTimeout(onBlur, 50); }}
-        style={stepBtnStyle}
-      >
+      <button onClick={() => { onChange(Math.min(max, value + 1)); setTimeout(onBlur, 50); }} style={btnStyle}>
         +
       </button>
     </div>
@@ -280,27 +297,3 @@ function ActionButton({
     </button>
   );
 }
-
-const closeBtnStyle: React.CSSProperties = {
-  background: "none",
-  border: "none",
-  fontFamily: "var(--font-body)",
-  fontSize: 16,
-  fontWeight: 600,
-  color: "var(--accent)",
-  cursor: "pointer",
-};
-
-const stepBtnStyle: React.CSSProperties = {
-  background: "var(--bg-primary)",
-  border: "none",
-  borderRadius: "var(--radius-sm)",
-  color: "var(--accent)",
-  fontSize: 18,
-  fontFamily: "var(--font-body)",
-  fontWeight: 600,
-  width: 32,
-  height: 32,
-  cursor: "pointer",
-  WebkitTapHighlightColor: "transparent",
-};

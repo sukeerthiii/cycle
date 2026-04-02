@@ -12,8 +12,8 @@ export default defineConfig({
         name: "Cycle",
         short_name: "Cycle",
         description: "Phase-aware fitness log",
-        theme_color: "#1C1917",
-        background_color: "#1C1917",
+        theme_color: "#FAF7F4",
+        background_color: "#FAF7F4",
         display: "standalone",
         orientation: "portrait",
         icons: [

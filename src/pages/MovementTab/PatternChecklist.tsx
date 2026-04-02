@@ -1,4 +1,4 @@
-import type { MovementPattern } from "../../models/types";
+import type { MovementPattern, Phase } from "../../models/types";
 
 const PATTERNS: { pattern: MovementPattern; label: string }[] = [
   { pattern: "squat", label: "Squat" },
@@ -9,15 +9,32 @@ const PATTERNS: { pattern: MovementPattern; label: string }[] = [
   { pattern: "core", label: "Core" },
 ];
 
+const phaseColorMap: Record<Phase, string> = {
+  menstrual: "var(--phase-menstrual)",
+  follicular: "var(--phase-follicular)",
+  ovulatory: "var(--phase-ovulatory)",
+  luteal: "var(--phase-luteal)",
+};
+
 interface PatternChecklistProps {
   patternsHit: Set<MovementPattern>;
+  phase: Phase;
 }
 
-export function PatternChecklist({ patternsHit }: PatternChecklistProps) {
+export function PatternChecklist({ patternsHit, phase }: PatternChecklistProps) {
+  const fillColor = phaseColorMap[phase];
+
   return (
     <div>
-      <span className="body-caption" style={{ display: "block", marginBottom: 10 }}>
-        This week's coverage
+      <span style={{
+        fontFamily: "var(--font-display)",
+        fontSize: 16,
+        fontWeight: 600,
+        color: "var(--text-primary)",
+        display: "block",
+        marginBottom: 10,
+      }}>
+        Weekly Split
       </span>
       <div style={{ display: "flex", gap: 12, justifyContent: "center" }}>
         {PATTERNS.map(({ pattern, label }) => {
@@ -30,7 +47,7 @@ export function PatternChecklist({ patternsHit }: PatternChecklistProps) {
                   height: 32,
                   borderRadius: "50%",
                   border: filled ? "none" : "2px solid var(--text-tertiary)",
-                  background: filled ? "var(--accent)" : "transparent",
+                  background: filled ? fillColor : "transparent",
                   display: "flex",
                   alignItems: "center",
                   justifyContent: "center",
@@ -39,7 +56,7 @@ export function PatternChecklist({ patternsHit }: PatternChecklistProps) {
                 }}
               >
                 {filled && (
-                  <span style={{ color: "var(--bg-primary)", fontSize: 14, fontWeight: 700 }}>✓</span>
+                  <span style={{ color: "#FFFFFF", fontSize: 14, fontWeight: 700 }}>✓</span>
                 )}
               </div>
               <span style={{

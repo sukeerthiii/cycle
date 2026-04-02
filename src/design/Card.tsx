@@ -1,23 +1,13 @@
 import { type ReactNode, type CSSProperties } from "react";
 
-type Phase = "menstrual" | "follicular" | "ovulatory" | "luteal";
-
 interface CardProps {
   children: ReactNode;
-  phase?: Phase;
   onClick?: () => void;
   style?: CSSProperties;
   className?: string;
 }
 
-const phaseColors: Record<Phase, string> = {
-  menstrual: "var(--phase-menstrual)",
-  follicular: "var(--phase-follicular)",
-  ovulatory: "var(--phase-ovulatory)",
-  luteal: "var(--phase-luteal)",
-};
-
-export function Card({ children, phase, onClick, style, className }: CardProps) {
+export function Card({ children, onClick, style, className }: CardProps) {
   return (
     <div
       className={`card ${className ?? ""}`}
@@ -35,18 +25,6 @@ export function Card({ children, phase, onClick, style, className }: CardProps) 
         ...style,
       }}
     >
-      {phase && (
-        <div
-          style={{
-            position: "absolute",
-            left: 0,
-            top: 0,
-            bottom: 0,
-            width: 3,
-            background: phaseColors[phase],
-          }}
-        />
-      )}
       {children}
     </div>
   );

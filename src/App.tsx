@@ -28,7 +28,7 @@ import type { WorkoutType, WorkoutSection, Phase, SuggestedWorkout } from "./mod
 import { generateSuggestion } from "./engine/suggestionEngine";
 import "./App.css";
 
-type Tab = "cycle" | "movement" | "trends" | "history";
+type Tab = "today" | "map" | "pulse" | "log";
 
 interface LogState {
   type: WorkoutType;
@@ -42,7 +42,7 @@ function todayISO() {
 }
 
 export default function App() {
-  const [activeTab, setActiveTab] = useState<Tab>("cycle");
+  const [activeTab, setActiveTab] = useState<Tab>("today");
   const [showTypePicker, setShowTypePicker] = useState(false);
   const [typePickerDate, setTypePickerDate] = useState<string>("");
   const [activeLog, setActiveLog] = useState<LogState | null>(null);
@@ -184,7 +184,7 @@ export default function App() {
       <GrainOverlay />
 
       <main className="app-content">
-        {activeTab === "cycle" && (
+        {activeTab === "today" && (
           <CycleHome
             cycleDay={cycleDay}
             totalDays={totalDays}
@@ -194,16 +194,29 @@ export default function App() {
             onOpenSettings={() => setShowSettings(true)}
           />
         )}
-        {activeTab === "movement" && (
+        {activeTab === "map" && (
           <Movement
             onAddWorkout={handleOpenLog}
             onEditSection={handleEditSection}
             onDeleteSection={deleteSectionFromDailyLog}
             onPlanWorkout={handlePlanWorkout}
+            onEditSteps={(date, currentSteps) => {
+              const input = prompt("Steps:", currentSteps?.toString() ?? "");
+              if (input === null) return;
+              const val = parseInt(input, 10);
+              const phase = phaseForDate(date);
+              if (!phase) return;
+              updateDailyLogSteps(date, phase, isNaN(val) ? null : val);
+            }}
+            onDeleteSteps={(date) => {
+              const phase = phaseForDate(date);
+              if (!phase) return;
+              updateDailyLogSteps(date, phase, null);
+            }}
           />
         )}
-        {activeTab === "trends" && <Trends />}
-        {activeTab === "history" && <History />}
+        {activeTab === "pulse" && <Trends />}
+        {activeTab === "log" && <History />}
       </main>
 
       {/* Type picker */}
@@ -213,6 +226,7 @@ export default function App() {
             onSelect={handleTypeSelect}
             onClose={() => setShowTypePicker(false)}
             suggestion={suggestion}
+            phase={phaseForDate(typePickerDate || today) ?? phase}
           />
         )}
       </AnimatePresence>
@@ -224,16 +238,19 @@ export default function App() {
             onSave={handleSaveWorkout}
             onClose={() => setActiveLog(null)}
             initialData={activeLog.editSection}
+            phase={phaseForDate(activeLog.date) ?? phase}
           />
         )}
         {(activeLog?.type === "pilates" ||
           activeLog?.type === "yoga" ||
-          activeLog?.type === "mobility") && (
+          activeLog?.type === "mobility" ||
+          activeLog?.type === "cardio") && (
           <SessionLog
             type={activeLog.type}
             onSave={handleSaveWorkout}
             onClose={() => setActiveLog(null)}
             initialData={activeLog.editSection}
+            phase={phaseForDate(activeLog.date) ?? phase}
           />
         )}
         {activeLog?.type === "walk" && (
@@ -241,27 +258,34 @@ export default function App() {
             onSave={handleSaveWorkout}
             onClose={() => setActiveLog(null)}
             initialData={activeLog.editSection}
+            phase={phaseForDate(activeLog.date) ?? phase}
           />
         )}
       </AnimatePresence>
 
       <AnimatePresence>
-        {showSettings && <Settings onClose={() => setShowSettings(false)} />}
+        {showSettings && <Settings onClose={() => setShowSettings(false)} phase={phase} />}
       </AnimatePresence>
 
       <FAB
         hasLoggedToday={hasLogged}
         onClick={() => handleOpenLog(today)}
+        phase={phase}
       />
 
       <nav className="tab-bar">
-        {(["cycle", "movement", "trends", "history"] as Tab[]).map((tab) => (
+        {(["today", "map", "pulse", "log"] as Tab[]).map((tab) => (
           <button
             key={tab}
-            className={`tab-item ${activeTab === tab ? "active" : ""}`}
+            className="tab-item"
             onClick={() => setActiveTab(tab)}
           >
-            <span className="tab-label">{tab}</span>
+            <span
+              className="tab-label"
+              style={activeTab === tab ? { color: `var(--phase-${phase})` } : undefined}
+            >
+              {tab}
+            </span>
           </button>
         ))}
       </nav>

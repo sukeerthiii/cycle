@@ -17,10 +17,10 @@ export function GrainOverlay() {
     const data = imageData.data;
 
     for (let i = 0; i < data.length; i += 4) {
-      const v = Math.random() * 255;
-      data[i] = v + 10;
-      data[i + 1] = v + 5;
-      data[i + 2] = v;
+      const v = Math.random() * 180 + 40;
+      data[i] = v;
+      data[i + 1] = v - 3;
+      data[i + 2] = v - 6;
       data[i + 3] = 255;
     }
 
@@ -38,8 +38,8 @@ export function GrainOverlay() {
         height: "100%",
         pointerEvents: "none",
         zIndex: 9999,
-        opacity: 0.08,
-        mixBlendMode: "soft-light",
+        opacity: 0.06,
+        mixBlendMode: "multiply",
         backgroundRepeat: "repeat",
       }}
     />

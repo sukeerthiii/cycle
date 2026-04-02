@@ -1,6 +1,6 @@
 export type Phase = "menstrual" | "follicular" | "ovulatory" | "luteal";
 
-export type WorkoutType = "strength" | "pilates" | "yoga" | "mobility" | "walk";
+export type WorkoutType = "strength" | "pilates" | "yoga" | "mobility" | "walk" | "cardio";
 
 export type MovementPattern =
   | "squat"

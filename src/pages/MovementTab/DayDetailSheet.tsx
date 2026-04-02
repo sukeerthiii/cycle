@@ -13,6 +13,8 @@ interface DayDetailSheetProps {
   onEditSection: (sectionIndex: number, section: WorkoutSection) => void;
   onDeleteSection: (sectionIndex: number) => void;
   onPlanWorkout: (date: string, type: WorkoutType, notes: string) => void;
+  onEditSteps: (date: string, currentSteps: number | null) => void;
+  onDeleteSteps: (date: string) => void;
 }
 
 const phaseLabels: Record<Phase, string> = {
@@ -20,6 +22,13 @@ const phaseLabels: Record<Phase, string> = {
   follicular: "Follicular",
   ovulatory: "Ovulatory",
   luteal: "Luteal",
+};
+
+const phaseColorMap: Record<Phase, string> = {
+  menstrual: "var(--phase-menstrual)",
+  follicular: "var(--phase-follicular)",
+  ovulatory: "var(--phase-ovulatory)",
+  luteal: "var(--phase-luteal)",
 };
 
 const workoutTypes: { type: WorkoutType; label: string }[] = [
@@ -39,9 +48,9 @@ function formatDate(dateStr: string): string {
   });
 }
 
-function formatDayName(dateStr: string): string {
-  const d = new Date(dateStr + "T00:00:00");
-  return d.toLocaleDateString("en-IN", { weekday: "long" });
+function formatDuration(mins: number): string {
+  if (mins >= 60) return `${Math.floor(mins / 60)}h ${mins % 60}m`;
+  return `${mins}m`;
 }
 
 export function DayDetailSheet({
@@ -54,11 +63,15 @@ export function DayDetailSheet({
   onEditSection,
   onDeleteSection,
   onPlanWorkout,
+  onEditSteps,
+  onDeleteSteps,
 }: DayDetailSheetProps) {
   const dailyLog = useDailyLog(date);
   const [confirmDelete, setConfirmDelete] = useState<number | null>(null);
   const [showPlanPicker, setShowPlanPicker] = useState(false);
   const [planNotes, setPlanNotes] = useState("");
+
+  const phaseColor = phase ? phaseColorMap[phase] : "var(--text-secondary)";
 
   let sections: WorkoutSection[] = [];
   try {
@@ -80,7 +93,7 @@ export function DayDetailSheet({
       style={{
         position: "fixed",
         inset: 0,
-        background: "rgba(0,0,0,0.5)",
+        background: "rgba(0,0,0,0.3)",
         zIndex: 300,
         display: "flex",
         alignItems: "flex-end",
@@ -98,9 +111,10 @@ export function DayDetailSheet({
           maxWidth: 420,
           maxHeight: "70vh",
           overflowY: "auto",
-          background: "var(--bg-elevated)",
+          background: "var(--bg-primary)",
           borderRadius: "20px 20px 0 0",
           padding: "24px 20px calc(24px + env(safe-area-inset-bottom))",
+          boxShadow: "0 -4px 20px rgba(0,0,0,0.08)",
         }}
       >
         {/* Header */}
@@ -110,10 +124,7 @@ export function DayDetailSheet({
               {isToday ? "Today" : formatDate(date)}
             </p>
             {phase && (
-              <span className="display-phase" style={{
-                color: `var(--phase-${phase})`,
-                fontSize: 11,
-              }}>
+              <span className="display-phase" style={{ color: phaseColor, fontSize: 11 }}>
                 {phaseLabels[phase]}
               </span>
             )}
@@ -140,16 +151,14 @@ export function DayDetailSheet({
               {phase ? `You'll likely be in ${phaseLabels[phase].toLowerCase()}.` : ""}
             </p>
 
-            {/* Existing plan */}
             {plannedWorkout && (
               <div style={{
                 padding: "12px 14px",
-                background: "var(--accent-muted)",
+                background: phase ? `var(--phase-${phase}-muted)` : "var(--bg-elevated)",
                 borderRadius: "var(--radius-md)",
-                borderLeft: "3px solid var(--accent)",
                 marginBottom: 12,
               }}>
-                <span style={{ fontFamily: "var(--font-body)", fontSize: 14, fontWeight: 600, color: "var(--accent)" }}>
+                <span style={{ fontFamily: "var(--font-body)", fontSize: 14, fontWeight: 600, color: phaseColor }}>
                   Planned: {plannedWorkout.type}
                 </span>
                 {plannedWorkout.notes && (
@@ -160,7 +169,6 @@ export function DayDetailSheet({
               </div>
             )}
 
-            {/* Plan workout button */}
             {!showPlanPicker ? (
               <motion.button
                 whileTap={{ scale: 0.97 }}
@@ -169,8 +177,8 @@ export function DayDetailSheet({
                   display: "block",
                   width: "100%",
                   padding: "13px",
-                  background: "var(--accent)",
-                  color: "var(--bg-primary)",
+                  background: phaseColor,
+                  color: "#FFFFFF",
                   border: "none",
                   borderRadius: "var(--radius-md)",
                   fontFamily: "var(--font-body)",
@@ -179,7 +187,7 @@ export function DayDetailSheet({
                   cursor: "pointer",
                 }}
               >
-                {plannedWorkout ? "Change plan" : `Plan workout for ${formatDayName(date)}`}
+                {plannedWorkout ? "Change plan" : "Plan Movement"}
               </motion.button>
             ) : (
               <div>
@@ -201,7 +209,7 @@ export function DayDetailSheet({
                       textAlign: "left",
                       padding: "11px 14px",
                       marginBottom: 6,
-                      background: "var(--bg-primary)",
+                      background: "var(--bg-elevated)",
                       border: "none",
                       borderRadius: "var(--radius-sm)",
                       fontFamily: "var(--font-body)",
@@ -226,7 +234,7 @@ export function DayDetailSheet({
                     fontSize: 14,
                     fontWeight: 400,
                     color: "var(--text-primary)",
-                    background: "var(--bg-primary)",
+                    background: "var(--bg-elevated)",
                     border: "none",
                     borderRadius: "var(--radius-sm)",
                     padding: "10px 14px",
@@ -238,7 +246,7 @@ export function DayDetailSheet({
           </div>
         )}
 
-        {/* Logged workouts — tap to edit */}
+        {/* Logged workouts */}
         {sections.length > 0 ? (
           sections.map((section, i) => (
             <WorkoutSectionCard
@@ -251,7 +259,7 @@ export function DayDetailSheet({
         ) : (
           !isFuture && (
             <p className="body-small" style={{ color: "var(--text-tertiary)", padding: "16px 0" }}>
-              {isToday ? "No workouts logged yet today." : "No workouts logged."}
+              {isToday ? "No movement logged yet today." : "No movement logged."}
             </p>
           )
         )}
@@ -260,20 +268,29 @@ export function DayDetailSheet({
         {dailyLog?.steps != null && (
           <div style={{
             marginTop: 12,
-            padding: "10px 14px",
-            background: "var(--bg-primary)",
+            padding: "12px 14px",
+            background: "var(--bg-elevated)",
             borderRadius: "var(--radius-md)",
-            display: "flex",
-            justifyContent: "space-between",
+            boxShadow: "var(--shadow-card)",
           }}>
-            <span className="body-small" style={{ color: "var(--text-secondary)" }}>Steps</span>
-            <span className="body-small" style={{ fontWeight: 600, fontVariantNumeric: "tabular-nums" }}>
+            <span style={{ fontFamily: "var(--font-body)", fontSize: 15, fontWeight: 600, color: "var(--text-primary)", display: "block" }}>
+              Steps
+            </span>
+            <span className="body-small" style={{ color: "var(--text-secondary)", fontVariantNumeric: "tabular-nums" }}>
               {dailyLog.steps.toLocaleString()}
             </span>
+            <div style={{ display: "flex", gap: 16, marginTop: 10, paddingTop: 8, borderTop: "1px solid var(--bg-deep)" }}>
+              <button onClick={() => onEditSteps(date, dailyLog.steps)} style={actionBtnStyle("var(--text-secondary)")}>
+                Edit
+              </button>
+              <button onClick={() => onDeleteSteps(date)} style={actionBtnStyle("var(--phase-menstrual)")}>
+                Delete
+              </button>
+            </div>
           </div>
         )}
 
-        {/* Add workout button */}
+        {/* Add Movement button */}
         {!isFuture && (
           <motion.button
             whileTap={{ scale: 0.97 }}
@@ -283,8 +300,8 @@ export function DayDetailSheet({
               width: "100%",
               padding: "13px",
               marginTop: 16,
-              background: "var(--accent)",
-              color: "var(--bg-primary)",
+              background: phaseColor,
+              color: "#FFFFFF",
               border: "none",
               borderRadius: "var(--radius-md)",
               fontFamily: "var(--font-body)",
@@ -293,7 +310,7 @@ export function DayDetailSheet({
               cursor: "pointer",
             }}
           >
-            + Add workout
+            + Add Movement
           </motion.button>
         )}
       </motion.div>
@@ -309,7 +326,7 @@ export function DayDetailSheet({
             style={{
               position: "fixed",
               inset: 0,
-              background: "rgba(0,0,0,0.6)",
+              background: "rgba(0,0,0,0.4)",
               zIndex: 500,
               display: "flex",
               alignItems: "center",
@@ -327,10 +344,11 @@ export function DayDetailSheet({
                 borderRadius: "var(--radius-lg)",
                 padding: "24px 20px",
                 textAlign: "center",
+                boxShadow: "0 8px 30px rgba(0,0,0,0.12)",
               }}
             >
               <p className="display-heading" style={{ fontSize: 17, marginBottom: 8 }}>
-                Delete workout?
+                Delete this entry?
               </p>
               <p className="body-small" style={{ color: "var(--text-secondary)", marginBottom: 20 }}>
                 This can't be undone.
@@ -341,7 +359,7 @@ export function DayDetailSheet({
                   style={{
                     flex: 1,
                     padding: "11px",
-                    background: "var(--bg-primary)",
+                    background: "var(--bg-deep)",
                     border: "none",
                     borderRadius: "var(--radius-md)",
                     fontFamily: "var(--font-body)",
@@ -367,7 +385,7 @@ export function DayDetailSheet({
                     fontFamily: "var(--font-body)",
                     fontSize: 15,
                     fontWeight: 600,
-                    color: "var(--bg-primary)",
+                    color: "#FFFFFF",
                     cursor: "pointer",
                   }}
                 >
@@ -392,55 +410,24 @@ function WorkoutSectionCard({ section, onTap, onDelete }: { section: WorkoutSect
   };
 
   return (
-    <motion.button
-      whileTap={{ scale: 0.98 }}
-      onClick={onTap}
-      style={{
-        display: "block",
-        width: "100%",
-        textAlign: "left",
-        background: "var(--bg-primary)",
-        borderRadius: "var(--radius-md)",
-        padding: "12px 14px",
-        marginBottom: 8,
-        border: "none",
-        cursor: "pointer",
-        WebkitTapHighlightColor: "transparent",
-      }}
-    >
-      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 6 }}>
-        <span style={{ fontFamily: "var(--font-body)", fontSize: 15, fontWeight: 600, color: "var(--text-primary)" }}>
-          {typeLabel[section.type] ?? section.type}
+    <div style={{
+      background: "var(--bg-elevated)",
+      borderRadius: "var(--radius-md)",
+      padding: "12px 14px",
+      marginBottom: 8,
+      boxShadow: "var(--shadow-card)",
+    }}>
+      <span style={{ fontFamily: "var(--font-body)", fontSize: 15, fontWeight: 600, color: "var(--text-primary)", display: "block" }}>
+        {typeLabel[section.type] ?? section.type}
+      </span>
+      {section.duration && (
+        <span className="body-caption" style={{ display: "block", marginTop: 1 }}>
+          {formatDuration(section.duration)}
         </span>
-        <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-          {section.duration && (
-            <span className="body-caption">
-              {section.duration >= 60
-                ? `${Math.floor(section.duration / 60)}h ${section.duration % 60}m`
-                : `${section.duration}m`}
-            </span>
-          )}
-          <span style={{ color: "var(--text-tertiary)", fontSize: 12 }}>Edit →</span>
-          <button
-            onClick={(e) => { e.stopPropagation(); onDelete(); }}
-            style={{
-              background: "none",
-              border: "none",
-              color: "var(--phase-menstrual)",
-              fontSize: 12,
-              fontFamily: "var(--font-body)",
-              fontWeight: 500,
-              cursor: "pointer",
-              padding: "2px 4px",
-            }}
-          >
-            Delete
-          </button>
-        </div>
-      </div>
+      )}
 
       {section.exercises.map((entry, ei) => (
-        <div key={ei} style={{ marginTop: 4 }}>
+        <div key={ei} style={{ marginTop: 6 }}>
           <span className="body-small" style={{ color: "var(--text-secondary)" }}>
             {entry.exercise.name}
           </span>
@@ -467,6 +454,29 @@ function WorkoutSectionCard({ section, onTap, onDelete }: { section: WorkoutSect
           {section.notes}
         </p>
       )}
-    </motion.button>
+
+      <div style={{ display: "flex", gap: 16, marginTop: 10, paddingTop: 8, borderTop: "1px solid var(--bg-deep)" }}>
+        <button onClick={onTap} style={actionBtnStyle("var(--text-secondary)")}>
+          Edit
+        </button>
+        <button onClick={(e) => { e.stopPropagation(); onDelete(); }} style={actionBtnStyle("var(--phase-menstrual)")}>
+          Delete
+        </button>
+      </div>
+    </div>
   );
+}
+
+function actionBtnStyle(color: string): React.CSSProperties {
+  return {
+    background: "none",
+    border: "none",
+    fontFamily: "var(--font-body)",
+    fontSize: 13,
+    fontWeight: 500,
+    color,
+    cursor: "pointer",
+    padding: 0,
+    WebkitTapHighlightColor: "transparent",
+  };
 }

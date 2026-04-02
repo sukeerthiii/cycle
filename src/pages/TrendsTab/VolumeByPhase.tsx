@@ -17,7 +17,7 @@ export function VolumeByPhase({ volumes }: VolumeByPhaseProps) {
 
   return (
     <Card>
-      <span style={{ fontFamily: "var(--font-body)", fontSize: 15, fontWeight: 600, display: "block", marginBottom: 14 }}>
+      <span style={{ fontFamily: "var(--font-display)", fontSize: 17, fontWeight: 600, color: "var(--text-primary)", display: "block", marginBottom: 14 }}>
         Volume by Phase
       </span>
 

@@ -26,6 +26,10 @@ export function PeriodControls() {
     setShowDatePicker(null);
   }
 
+  const confirmColor = showDatePicker === "start"
+    ? "var(--phase-menstrual)"
+    : "var(--phase-follicular)";
+
   return (
     <>
       <div style={{ display: "flex", gap: 10 }}>
@@ -40,7 +44,7 @@ export function PeriodControls() {
           <motion.button
             whileTap={{ scale: 0.97 }}
             onClick={() => setShowDatePicker("end")}
-            style={periodBtnStyle("var(--text-secondary)")}
+            style={periodBtnStyle("var(--phase-follicular)")}
           >
             Log period end
           </motion.button>
@@ -57,7 +61,7 @@ export function PeriodControls() {
             style={{
               position: "fixed",
               inset: 0,
-              background: "rgba(0,0,0,0.5)",
+              background: "rgba(0,0,0,0.3)",
               zIndex: 300,
               display: "flex",
               alignItems: "flex-end",
@@ -73,9 +77,10 @@ export function PeriodControls() {
               style={{
                 width: "100%",
                 maxWidth: 420,
-                background: "var(--bg-elevated)",
+                background: "var(--bg-primary)",
                 borderRadius: "20px 20px 0 0",
                 padding: "24px 20px calc(24px + env(safe-area-inset-bottom))",
+                boxShadow: "0 -4px 20px rgba(0,0,0,0.08)",
               }}
             >
               <p className="display-heading" style={{ marginBottom: 16, fontSize: 18 }}>
@@ -91,12 +96,12 @@ export function PeriodControls() {
                   fontSize: 18,
                   fontWeight: 500,
                   color: "var(--text-primary)",
-                  background: "var(--bg-primary)",
+                  background: "var(--bg-elevated)",
                   border: "none",
                   borderRadius: "var(--radius-md)",
                   padding: "12px 16px",
                   width: "100%",
-                  colorScheme: "dark",
+                  colorScheme: "light",
                   marginBottom: 20,
                 }}
               />
@@ -107,8 +112,8 @@ export function PeriodControls() {
                 style={{
                   width: "100%",
                   padding: "14px",
-                  background: showDatePicker === "start" ? "var(--phase-menstrual)" : "var(--accent)",
-                  color: "var(--bg-primary)",
+                  background: confirmColor,
+                  color: "#FFFFFF",
                   border: "none",
                   borderRadius: "var(--radius-md)",
                   fontFamily: "var(--font-body)",
@@ -140,5 +145,6 @@ function periodBtnStyle(color: string): React.CSSProperties {
     color,
     cursor: "pointer",
     WebkitTapHighlightColor: "transparent",
+    boxShadow: "var(--shadow-card)",
   };
 }

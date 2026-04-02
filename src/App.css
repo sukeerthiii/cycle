@@ -23,7 +23,7 @@
   height: var(--tab-bar-height);
   padding-bottom: env(safe-area-inset-bottom);
   background: var(--bg-primary);
-  border-top: 1px solid var(--bg-elevated);
+  border-top: 1px solid var(--bg-deep);
   display: flex;
   align-items: center;
   justify-content: space-around;
@@ -53,9 +53,7 @@
   transition: color 0.2s;
 }
 
-.tab-item.active .tab-label {
-  color: var(--accent);
-}
+/* Active tab color set inline via phase */
 
 /* Placeholder */
 .placeholder-page {

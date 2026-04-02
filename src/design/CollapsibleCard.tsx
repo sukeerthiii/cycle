@@ -2,27 +2,28 @@ import { useState, type ReactNode } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Card } from "./Card";
 
-type Phase = "menstrual" | "follicular" | "ovulatory" | "luteal";
-
 interface CollapsibleCardProps {
   title: string;
   children: ReactNode;
-  phase?: Phase;
   defaultOpen?: boolean;
 }
 
 export function CollapsibleCard({
   title,
   children,
-  phase,
   defaultOpen = true,
 }: CollapsibleCardProps) {
   const [open, setOpen] = useState(defaultOpen);
 
   return (
-    <Card phase={phase} onClick={() => setOpen(!open)} style={{ cursor: "pointer" }}>
+    <Card onClick={() => setOpen(!open)} style={{ cursor: "pointer" }}>
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-        <span className="body-small" style={{ color: "var(--text-secondary)" }}>
+        <span style={{
+          fontFamily: "var(--font-display)",
+          fontSize: 17,
+          fontWeight: 600,
+          color: "var(--text-primary)",
+        }}>
           {title}
         </span>
         <motion.span
