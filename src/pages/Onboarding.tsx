@@ -38,8 +38,13 @@ export function Onboarding({ onComplete }: OnboardingProps) {
       flexDirection: "column",
       justifyContent: "center",
       padding: "32px 24px",
+      paddingTop: "calc(32px + env(safe-area-inset-top))",
       background: "var(--bg-primary)",
       color: "var(--text-primary)",
+      maxWidth: 420,
+      margin: "0 auto",
+      width: "100%",
+      boxSizing: "border-box",
     }}>
       <motion.div
         initial={{ opacity: 0, y: 20 }}
@@ -71,7 +76,7 @@ export function Onboarding({ onComplete }: OnboardingProps) {
             onChange={(e) => setLastPeriod(e.target.value)}
             style={{
               fontFamily: "var(--font-body)",
-              fontSize: 18,
+              fontSize: 16,
               fontWeight: 500,
               color: "var(--text-primary)",
               background: "var(--bg-elevated)",
@@ -79,7 +84,10 @@ export function Onboarding({ onComplete }: OnboardingProps) {
               borderRadius: "var(--radius-md)",
               padding: "12px 16px",
               width: "100%",
+              maxWidth: "100%",
               colorScheme: "light",
+              WebkitAppearance: "none",
+              appearance: "none" as const,
             }}
           />
         </Field>
@@ -137,12 +145,12 @@ function NumberStepper({
 }) {
   return (
     <div style={{
-      display: "flex",
+      display: "inline-flex",
       alignItems: "center",
       gap: 16,
       background: "var(--bg-elevated)",
       borderRadius: "var(--radius-md)",
-      padding: "8px 16px",
+      padding: "10px 20px",
     }}>
       <button
         onClick={() => onChange(Math.max(min, value - 1))}

@@ -6,12 +6,14 @@
   background: var(--bg-primary);
   color: var(--text-primary);
   overflow: hidden;
+  padding-top: env(safe-area-inset-top);
 }
 
 .app-content {
   flex: 1;
   overflow-y: auto;
-  padding-bottom: calc(var(--tab-bar-height) + env(safe-area-inset-bottom));
+  -webkit-overflow-scrolling: touch;
+  padding-bottom: calc(var(--tab-bar-height) + env(safe-area-inset-bottom) + 16px);
 }
 
 /* Tab bar */
@@ -20,12 +22,12 @@
   bottom: 0;
   left: 0;
   right: 0;
-  height: var(--tab-bar-height);
+  height: calc(var(--tab-bar-height) + env(safe-area-inset-bottom));
   padding-bottom: env(safe-area-inset-bottom);
   background: var(--bg-primary);
   border-top: 1px solid var(--bg-deep);
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   justify-content: space-around;
   z-index: 100;
 }
@@ -36,7 +38,7 @@
   flex-direction: column;
   align-items: center;
   gap: 2px;
-  padding: 8px 0;
+  padding: 12px 0 8px;
   background: none;
   border: none;
   cursor: pointer;
@@ -51,22 +53,4 @@
   text-transform: capitalize;
   color: var(--text-tertiary);
   transition: color 0.2s;
-}
-
-/* Active tab color set inline via phase */
-
-/* Placeholder */
-.placeholder-page {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  min-height: 60vh;
-}
-
-.placeholder-label {
-  font-family: var(--font-display);
-  font-size: 28px;
-  color: var(--text-secondary);
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
 }
