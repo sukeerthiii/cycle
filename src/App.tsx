@@ -153,7 +153,7 @@ export default function App() {
     [activeLog, phaseForDate, today, dailyLog]
   );
 
-  if (!ready || onboardedSetting === undefined) return null;
+  if (!ready) return null;
 
   if (!isOnboarded) {
     return (
