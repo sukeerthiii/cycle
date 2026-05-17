@@ -29,6 +29,7 @@ const workoutTypes: { type: WorkoutType; label: string }[] = [
   { type: "mobility", label: "Mobility / Stretches" },
   { type: "walk", label: "Walk" },
   { type: "cardio", label: "Cardio" },
+  { type: "running", label: "Running" },
 ];
 
 export function TypePicker({ onSelect, onClose, suggestion, phase }: TypePickerProps) {

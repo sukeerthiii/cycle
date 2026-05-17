@@ -1,6 +1,6 @@
 export type Phase = "menstrual" | "follicular" | "ovulatory" | "luteal";
 
-export type WorkoutType = "strength" | "pilates" | "yoga" | "mobility" | "walk" | "cardio";
+export type WorkoutType = "strength" | "pilates" | "yoga" | "mobility" | "walk" | "cardio" | "running";
 
 export type MovementPattern =
   | "squat"
@@ -29,6 +29,11 @@ export interface DailyLog {
   plannedWorkout: PlannedWorkout | null;
 }
 
+export interface RunInterval {
+  type: "run" | "walk";
+  durationSeconds: number;
+}
+
 export interface WorkoutSection {
   type: WorkoutType;
   exercises: ExerciseEntry[];
@@ -36,6 +41,7 @@ export interface WorkoutSection {
   steps: number | null;
   distance: number | null;
   notes: string | null;
+  intervals?: RunInterval[];
 }
 
 export interface ExerciseEntry {

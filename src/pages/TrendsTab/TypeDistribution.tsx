@@ -11,6 +11,7 @@ const typeConfig: { type: string; label: string; color: string }[] = [
   { type: "mobility", label: "Mobility", color: "var(--phase-ovulatory)" },
   { type: "walk", label: "Walk", color: "var(--text-secondary)" },
   { type: "cardio", label: "Cardio", color: "var(--phase-menstrual)" },
+  { type: "running", label: "Running", color: "var(--phase-follicular)" },
 ];
 
 export function TypeDistribution({ distribution }: TypeDistributionProps) {

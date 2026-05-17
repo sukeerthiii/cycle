@@ -7,7 +7,8 @@ export function GrainOverlay() {
     const canvas = canvasRef.current;
     if (!canvas) return;
 
-    const size = 256;
+    const dpr = window.devicePixelRatio || 1;
+    const size = Math.round(256 * dpr);
     canvas.width = size;
     canvas.height = size;
     const ctx = canvas.getContext("2d");
@@ -40,7 +41,6 @@ export function GrainOverlay() {
         zIndex: 9999,
         opacity: 0.06,
         mixBlendMode: "multiply",
-        backgroundRepeat: "repeat",
       }}
     />
   );

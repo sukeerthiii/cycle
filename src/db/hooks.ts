@@ -182,6 +182,30 @@ export async function isOnboarded(): Promise<boolean> {
   return val?.value === "true";
 }
 
+// ── Last session lookup ──
+
+export async function getLastSessionForExercise(
+  exerciseId: string
+): Promise<{ reps: number; weight: number | null; isBodyweight: boolean; duration: number | null }[]> {
+  const logs = await db.dailyLogs.orderBy("date").reverse().limit(60).toArray();
+  for (const log of logs) {
+    const sections = parseSections(log);
+    for (const section of sections) {
+      for (const entry of section.exercises) {
+        if (entry.exercise.id === exerciseId) {
+          return entry.sets.map((s: { reps: number; weight: number | null; isBodyweight?: boolean; duration?: number | null }) => ({
+            reps: s.reps,
+            weight: s.weight,
+            isBodyweight: s.isBodyweight ?? false,
+            duration: s.duration ?? null,
+          }));
+        }
+      }
+    }
+  }
+  return [];
+}
+
 // ── Exercises ──
 
 export function useExercises() {

@@ -1,6 +1,8 @@
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { useDailyLogs } from "../../db/hooks";
+import { useDailyLogs, updateDailyLogSteps } from "../../db/hooks";
+import { calculatePhase } from "../../engine/phaseEngine";
+import { useLatestCycleLog } from "../../db/hooks";
 import type { WorkoutSection, Phase } from "../../models/types";
 
 const phaseLabels: Record<Phase, string> = {
@@ -17,22 +19,38 @@ function formatDate(dateStr: string): string {
 
 export function WorkoutHistory() {
   const logs = useDailyLogs();
+  const latestCycle = useLatestCycleLog();
   const [expandedDate, setExpandedDate] = useState<string | null>(null);
+  const [editingSteps, setEditingSteps] = useState<string | null>(null);
+  const [stepsDraft, setStepsDraft] = useState("");
 
   if (!logs || logs.length === 0) {
     return (
       <p className="body-small" style={{ color: "var(--text-tertiary)", textAlign: "center", marginTop: 40 }}>
-        No workouts logged yet.
+        No movement logged yet.
       </p>
     );
   }
 
-  // Filter to only days with actual data
   const withData = logs.filter((l) => l.sections !== "[]" || l.steps != null);
+
+  function handleStepsTap(date: string, currentSteps: number | null) {
+    setEditingSteps(date);
+    setStepsDraft(currentSteps?.toString() ?? "");
+  }
+
+  function handleStepsBlur(date: string) {
+    const val = stepsDraft.replace(/\D/g, "");
+    const steps = val ? parseInt(val, 10) : null;
+    const phase = latestCycle
+      ? calculatePhase(latestCycle.periodStartDate, latestCycle.cycleLength, latestCycle.periodLength, date).phase
+      : "follicular" as Phase;
+    updateDailyLogSteps(date, phase, steps);
+    setEditingSteps(null);
+  }
 
   return (
     <div>
-      {/* Column headers */}
       <div style={headerRowStyle}>
         <span style={{ flex: 1.2 }}>Date</span>
         <span style={{ flex: 1 }}>Phase</span>
@@ -48,31 +66,72 @@ export function WorkoutHistory() {
         const types = sections.map((s) => s.type).join(", ");
         const phase = log.phase as Phase;
         const isExpanded = expandedDate === log.date;
+        const isEditingThis = editingSteps === log.date;
 
         return (
           <div key={log.date}>
-            <motion.button
-              whileTap={{ scale: 0.98 }}
-              onClick={() => setExpandedDate(isExpanded ? null : log.date)}
-              style={rowStyle}
-            >
-              <span style={{ flex: 1.2, fontVariantNumeric: "tabular-nums" }}>
+            <div style={rowStyle}>
+              <span
+                onClick={() => setExpandedDate(isExpanded ? null : log.date)}
+                style={{ flex: 1.2, fontVariantNumeric: "tabular-nums", cursor: "pointer" }}
+              >
                 {formatDate(log.date)}
               </span>
-              <span style={{
-                flex: 1,
-                color: `var(--phase-${phase})`,
-                fontSize: 13,
-              }}>
+              <span
+                onClick={() => setExpandedDate(isExpanded ? null : log.date)}
+                style={{ flex: 1, color: `var(--phase-${phase})`, fontSize: 13, cursor: "pointer" }}
+              >
                 {phaseLabels[phase] ?? phase}
               </span>
-              <span style={{ flex: 1.2, textTransform: "capitalize" }}>
+              <span
+                onClick={() => setExpandedDate(isExpanded ? null : log.date)}
+                style={{ flex: 1.2, textTransform: "capitalize", cursor: "pointer" }}
+              >
                 {types || "—"}
               </span>
-              <span style={{ flex: 0.8, textAlign: "right", fontVariantNumeric: "tabular-nums" }}>
-                {log.steps != null ? log.steps.toLocaleString() : "—"}
+
+              {/* Tappable steps field */}
+              <span style={{ flex: 0.8, textAlign: "right" }}>
+                {isEditingThis ? (
+                  <input
+                    autoFocus
+                    type="text"
+                    inputMode="numeric"
+                    value={stepsDraft}
+                    onChange={(e) => setStepsDraft(e.target.value)}
+                    onBlur={() => handleStepsBlur(log.date)}
+                    onKeyDown={(e) => { if (e.key === "Enter") handleStepsBlur(log.date); }}
+                    style={{
+                      width: 56,
+                      fontFamily: "var(--font-body)",
+                      fontSize: 13,
+                      fontWeight: 400,
+                      color: "var(--text-primary)",
+                      background: "var(--bg-elevated)",
+                      border: "none",
+                      borderRadius: "var(--radius-sm)",
+                      padding: "2px 6px",
+                      textAlign: "right",
+                      outline: "none",
+                      fontVariantNumeric: "tabular-nums",
+                    }}
+                  />
+                ) : (
+                  <span
+                    onClick={() => handleStepsTap(log.date, log.steps)}
+                    style={{
+                      cursor: "pointer",
+                      fontVariantNumeric: "tabular-nums",
+                      color: log.steps != null ? "var(--text-primary)" : "var(--text-tertiary)",
+                      borderBottom: "1px dashed var(--text-tertiary)",
+                      paddingBottom: 1,
+                    }}
+                  >
+                    {log.steps != null ? log.steps.toLocaleString() : "—"}
+                  </span>
+                )}
               </span>
-            </motion.button>
+            </div>
 
             <AnimatePresence>
               {isExpanded && sections.length > 0 && (
@@ -156,13 +215,12 @@ const rowStyle: React.CSSProperties = {
   width: "100%",
   padding: "10px 12px",
   background: "none",
-  border: "none",
   borderBottom: "1px solid var(--bg-elevated)",
   fontFamily: "var(--font-body)",
   fontSize: 14,
   fontWeight: 400,
   color: "var(--text-primary)",
-  cursor: "pointer",
   textAlign: "left",
   WebkitTapHighlightColor: "transparent",
+  alignItems: "center",
 };

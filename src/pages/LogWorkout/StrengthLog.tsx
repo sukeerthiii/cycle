@@ -1,7 +1,7 @@
 import { useState, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { ExerciseSearch } from "./ExerciseSearch";
-import { addExercise } from "../../db/hooks";
+import { addExercise, getLastSessionForExercise } from "../../db/hooks";
 import type { Exercise, ExerciseEntry, SetEntry, WorkoutSection, MovementPattern, Phase } from "../../models/types";
 import { profile } from "../../models/profile";
 
@@ -36,14 +36,12 @@ export function StrengthLog({ onSave, onClose, initialData, phase }: StrengthLog
   const color = phaseColorMap[phase];
   const muted = phaseMutedMap[phase];
 
-  const addExerciseEntry = useCallback((exercise: Exercise) => {
-    setExercises((prev) => [
-      ...prev,
-      {
-        exercise,
-        sets: [{ reps: 10, weight: null, isBodyweight: false, duration: null }],
-      },
-    ]);
+  const addExerciseEntry = useCallback(async (exercise: Exercise) => {
+    const lastSets = await getLastSessionForExercise(exercise.id);
+    const sets: SetEntry[] = lastSets.length > 0
+      ? lastSets
+      : [{ reps: 10, weight: null, isBodyweight: false, duration: null }];
+    setExercises((prev) => [...prev, { exercise, sets }]);
     setShowSearch(false);
   }, []);
 

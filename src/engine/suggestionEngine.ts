@@ -244,6 +244,7 @@ function buildPlannedSuggestion(
     mobility: "Mobility / Stretches",
     walk: "Walk",
     cardio: "Cardio",
+    running: "Running",
   };
   return {
     type,

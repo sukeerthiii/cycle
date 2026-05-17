@@ -45,6 +45,26 @@ export function ExerciseProgression() {
     return allExercises.filter((e) => e.category === "strength");
   }, [allExercises]);
 
+  const topExercises = useMemo(() => {
+    if (!allLogs) return [];
+    const freq = new Map<string, { name: string; count: number }>();
+    for (const log of allLogs) {
+      let sections: WorkoutSection[] = [];
+      try { sections = JSON.parse(log.sections) as WorkoutSection[]; } catch { continue; }
+      for (const section of sections) {
+        for (const entry of section.exercises) {
+          const prev = freq.get(entry.exercise.id);
+          if (prev) prev.count++;
+          else freq.set(entry.exercise.id, { name: entry.exercise.name, count: 1 });
+        }
+      }
+    }
+    return [...freq.entries()]
+      .sort((a, b) => b[1].count - a[1].count)
+      .slice(0, 5)
+      .map(([id, { name }]) => ({ id, name }));
+  }, [allLogs]);
+
   const filtered = useMemo(() => {
     const q = search.toLowerCase().trim();
     if (!q) return strengthExercises.slice(0, 20);
@@ -122,9 +142,34 @@ export function ExerciseProgression() {
         )}
       </div>
 
-      {/* Exercise picker */}
       {!selectedId ? (
         <div>
+          {/* Quick picks */}
+          {topExercises.length > 0 && (
+            <div style={{ display: "flex", gap: 6, flexWrap: "wrap", marginBottom: 12 }}>
+              {topExercises.map((ex) => (
+                <button
+                  key={ex.id}
+                  onClick={() => { setSelectedId(ex.id); setSearch(""); }}
+                  style={{
+                    fontFamily: "var(--font-body)",
+                    fontSize: 12,
+                    fontWeight: 500,
+                    color: "var(--text-secondary)",
+                    background: "var(--bg-deep)",
+                    border: "none",
+                    borderRadius: "var(--radius-full)",
+                    padding: "5px 12px",
+                    cursor: "pointer",
+                    WebkitTapHighlightColor: "transparent",
+                  }}
+                >
+                  {ex.name}
+                </button>
+              ))}
+            </div>
+          )}
+
           <input
             type="text"
             placeholder="Search exercises..."

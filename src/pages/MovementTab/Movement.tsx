@@ -1,11 +1,12 @@
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 import { AnimatePresence } from "framer-motion";
 import { MonthCalendar } from "./MonthCalendar";
 import { PatternChecklist } from "./PatternChecklist";
 import { DayDetailSheet } from "./DayDetailSheet";
 import { PeriodControls } from "./PeriodControls";
+import { Card } from "../../design/Card";
 import { calculatePhase } from "../../engine/phaseEngine";
-import { useLatestCycleLog, useDailyLogs } from "../../db/hooks";
+import { useLatestCycleLog, useDailyLogs, useSetting, setSetting } from "../../db/hooks";
 import type { Phase, WorkoutSection, WorkoutType, MovementPattern } from "../../models/types";
 
 interface MovementProps {
@@ -39,6 +40,19 @@ function endOfWeekISO(): string {
 
 export function Movement({ onAddWorkout, onEditSection, onDeleteSection, onPlanWorkout, onEditSteps, onDeleteSteps }: MovementProps) {
   const [selectedDate, setSelectedDate] = useState<string | null>(null);
+  const weeklyPlanSetting = useSetting("weeklyPlan");
+  const [weeklyPlan, setWeeklyPlan] = useState("");
+
+  useEffect(() => {
+    if (weeklyPlanSetting?.value !== undefined) {
+      setWeeklyPlan(weeklyPlanSetting.value);
+    }
+  }, [weeklyPlanSetting]);
+
+  function handlePlanBlur() {
+    setSetting("weeklyPlan", weeklyPlan);
+  }
+
   const [viewMonth, setViewMonth] = useState(() => {
     const now = new Date();
     return { year: now.getFullYear(), month: now.getMonth() };
@@ -114,6 +128,43 @@ export function Movement({ onAddWorkout, onEditSection, onDeleteSection, onPlanW
 
       <div style={{ marginTop: 24 }}>
         <PeriodControls />
+      </div>
+
+      {/* Weekly planner */}
+      <div style={{ marginTop: 24 }}>
+        <Card>
+          <span style={{
+            fontFamily: "var(--font-display)",
+            fontSize: 17,
+            fontWeight: 600,
+            color: "var(--text-primary)",
+            display: "block",
+            marginBottom: 10,
+          }}>
+            Weekly Plan
+          </span>
+          <textarea
+            placeholder="Monday: lower body&#10;Tuesday: pilates&#10;Wednesday: rest&#10;..."
+            value={weeklyPlan}
+            onChange={(e) => setWeeklyPlan(e.target.value)}
+            onBlur={handlePlanBlur}
+            rows={5}
+            style={{
+              width: "100%",
+              fontFamily: "var(--font-body)",
+              fontSize: 14,
+              fontWeight: 400,
+              color: "var(--text-primary)",
+              background: "var(--bg-primary)",
+              border: "none",
+              borderRadius: "var(--radius-sm)",
+              padding: "10px 12px",
+              resize: "none",
+              outline: "none",
+              lineHeight: 1.6,
+            }}
+          />
+        </Card>
       </div>
 
       <AnimatePresence>

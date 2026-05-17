@@ -12,6 +12,7 @@ import { TypePicker } from "./pages/LogWorkout/TypePicker";
 import { StrengthLog } from "./pages/LogWorkout/StrengthLog";
 import { SessionLog } from "./pages/LogWorkout/SessionLog";
 import { WalkLog } from "./pages/LogWorkout/WalkLog";
+import { RunningLog } from "./pages/LogWorkout/RunningLog";
 import { calculatePhase } from "./engine/phaseEngine";
 import {
   useLatestCycleLog,
@@ -255,6 +256,14 @@ export default function App() {
         )}
         {activeLog?.type === "walk" && (
           <WalkLog
+            onSave={handleSaveWorkout}
+            onClose={() => setActiveLog(null)}
+            initialData={activeLog.editSection}
+            phase={phaseForDate(activeLog.date) ?? phase}
+          />
+        )}
+        {activeLog?.type === "running" && (
+          <RunningLog
             onSave={handleSaveWorkout}
             onClose={() => setActiveLog(null)}
             initialData={activeLog.editSection}

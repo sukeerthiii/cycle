@@ -1,7 +1,7 @@
 import { useMemo } from "react";
 import { StepsGraph } from "./StepsGraph";
 import { ExerciseProgression } from "./ExerciseProgression";
-import { VolumeByPhase } from "./VolumeByPhase";
+import { RunningProgress } from "./RunningProgress";
 import { TypeDistribution } from "./TypeDistribution";
 import { calculatePhase } from "../../engine/phaseEngine";
 import { useLatestCycleLog, useDailyLogs } from "../../db/hooks";
@@ -26,36 +26,22 @@ export function Trends() {
     ? calculatePhase(latestCycle.periodStartDate, latestCycle.cycleLength, latestCycle.periodLength)
     : null;
 
-  const { phaseVolumes, typeDistribution } = useMemo(() => {
-    if (!allLogs || !latestCycle) {
-      return { phaseVolumes: {} as Record<Phase, number>, typeDistribution: {} as Record<string, number> };
-    }
+  const typeDistribution = useMemo(() => {
+    if (!allLogs || !latestCycle) return {} as Record<string, number>;
 
     const cycleStart = latestCycle.periodStartDate;
     const today = todayISO();
-    const pv: Record<Phase, number> = { menstrual: 0, follicular: 0, ovulatory: 0, luteal: 0 };
     const td: Record<string, number> = {};
 
     for (const log of allLogs) {
       if (log.date < cycleStart || log.date > today) continue;
-
       let sections: WorkoutSection[] = [];
       try { sections = JSON.parse(log.sections) as WorkoutSection[]; } catch { continue; }
-
       for (const section of sections) {
         td[section.type] = (td[section.type] ?? 0) + 1;
-
-        for (const entry of section.exercises) {
-          for (const set of entry.sets) {
-            const w = set.weight ?? 0;
-            const phase = log.phase as Phase;
-            pv[phase] = (pv[phase] ?? 0) + set.reps * w;
-          }
-        }
       }
     }
-
-    return { phaseVolumes: pv, typeDistribution: td };
+    return td;
   }, [allLogs, latestCycle]);
 
   if (!phaseData || !latestCycle) {
@@ -70,7 +56,6 @@ export function Trends() {
 
   return (
     <div style={{ padding: "24px 16px 32px" }}>
-      {/* Header */}
       <div style={{ marginBottom: 24 }}>
         <h1 style={{ fontFamily: "var(--font-display)", fontSize: 24, fontWeight: 600, marginBottom: 2 }}>
           Pulse
@@ -85,24 +70,20 @@ export function Trends() {
         </p>
       </div>
 
-      {/* Steps */}
       <StepsGraph
         periodStartDate={latestCycle.periodStartDate}
         cycleLength={latestCycle.cycleLength}
         periodLength={latestCycle.periodLength}
       />
 
-      {/* Exercise Progression */}
       <div style={{ marginTop: 16 }}>
         <ExerciseProgression />
       </div>
 
-      {/* Volume by Phase */}
       <div style={{ marginTop: 16 }}>
-        <VolumeByPhase volumes={phaseVolumes} />
+        <RunningProgress />
       </div>
 
-      {/* Workout Types */}
       <div style={{ marginTop: 16 }}>
         <TypeDistribution distribution={typeDistribution} />
       </div>

@@ -25,38 +25,72 @@ export async function exportJSON(): Promise<void> {
 export async function exportCSV(): Promise<void> {
   const dailyLogs = await db.dailyLogs.orderBy("date").toArray();
 
-  const rows: string[] = ["Date,Phase,Type,Exercises,Sets,Volume (lb),Steps,Notes"];
+  const rows: string[] = ["Date,Phase,Type,Exercise,Pattern,Sets Detail,Volume (lb),Steps,Notes"];
 
   for (const log of dailyLogs) {
-    let sections: { type: string; exercises: { exercise: { name: string }; sets: { reps: number; weight: number | null }[] }[]; duration: number | null; steps: number | null; notes: string | null }[] = [];
+    let sections: {
+      type: string;
+      exercises: { exercise: { name: string; movementPattern?: string | null }; sets: { reps: number; weight: number | null; isBodyweight?: boolean }[] }[];
+      duration: number | null;
+      steps: number | null;
+      distance: number | null;
+      notes: string | null;
+      intervals?: { type: string; durationSeconds: number }[];
+    }[] = [];
     try { sections = JSON.parse(log.sections); } catch { continue; }
 
     if (sections.length === 0 && log.steps == null) continue;
 
     for (const section of sections) {
-      const exerciseNames = section.exercises.map((e) => e.exercise.name).join("; ");
-      const totalSets = section.exercises.reduce((a, e) => a + e.sets.length, 0);
-      let volume = 0;
-      for (const entry of section.exercises) {
-        for (const set of entry.sets) {
-          volume += set.reps * (set.weight ?? 0);
-        }
-      }
+      if (section.exercises.length > 0) {
+        for (const entry of section.exercises) {
+          const setsDetail = entry.sets.map((s) => {
+            const w = s.isBodyweight ? "BW" : `${s.weight ?? 0}`;
+            return `${s.reps}x${w}`;
+          }).join(", ");
 
-      rows.push([
-        log.date,
-        log.phase,
-        section.type,
-        `"${exerciseNames}"`,
-        totalSets.toString(),
-        volume.toString(),
-        (section.steps ?? log.steps ?? "").toString(),
-        `"${(section.notes ?? "").replace(/"/g, '""')}"`,
-      ].join(","));
+          let volume = 0;
+          for (const set of entry.sets) {
+            volume += set.reps * (set.weight ?? 0);
+          }
+
+          rows.push([
+            log.date,
+            log.phase,
+            section.type,
+            `"${entry.exercise.name}"`,
+            entry.exercise.movementPattern ?? "",
+            `"${setsDetail}"`,
+            volume.toString(),
+            "",
+            `"${(section.notes ?? "").replace(/"/g, '""')}"`,
+          ].join(","));
+        }
+      } else {
+        // Session-type workouts (pilates, yoga, cardio, walk, running)
+        let detail = "";
+        if (section.duration) detail = `${section.duration}m`;
+        if (section.intervals) {
+          detail = section.intervals.map((iv) => `${iv.type} ${Math.floor(iv.durationSeconds / 60)}:${String(iv.durationSeconds % 60).padStart(2, "0")}`).join(", ");
+        }
+
+        rows.push([
+          log.date,
+          log.phase,
+          section.type,
+          "",
+          "",
+          `"${detail}"`,
+          "",
+          (section.steps ?? "").toString(),
+          `"${(section.notes ?? "").replace(/"/g, '""')}"`,
+        ].join(","));
+      }
     }
 
+    // Steps-only days
     if (sections.length === 0 && log.steps != null) {
-      rows.push([log.date, log.phase, "", "", "", "", log.steps.toString(), ""].join(","));
+      rows.push([log.date, log.phase, "", "", "", "", "", log.steps.toString(), ""].join(","));
     }
   }
 
