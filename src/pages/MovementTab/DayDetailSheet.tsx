@@ -114,16 +114,19 @@ export function DayDetailSheet({
           maxHeight: "75vh",
           overflowY: "auto",
           WebkitOverflowScrolling: "touch",
-          background: "var(--bg-primary)",
+          background: "rgba(255, 255, 255, 0.6)",
+          backdropFilter: "blur(30px)",
+          WebkitBackdropFilter: "blur(30px)",
           borderRadius: "20px 20px 0 0",
+          border: "1px solid rgba(255, 255, 255, 0.6)",
+          boxShadow: "0 -4px 24px rgba(0, 0, 0, 0.06), inset 0 1px 0 rgba(255, 255, 255, 0.5)",
           padding: `24px 20px calc(24px + var(--tab-bar-height) + env(safe-area-inset-bottom))`,
-          boxShadow: "0 -4px 20px rgba(0,0,0,0.08)",
         }}
       >
         {/* Header */}
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 16 }}>
           <div>
-            <p className="display-heading" style={{ fontSize: 18 }}>
+            <p style={{ fontFamily: "var(--font-body)", fontSize: 16, fontWeight: 500 }}>
               {isToday ? "Today" : formatDate(date)}
             </p>
             {phase && (
@@ -350,7 +353,7 @@ export function DayDetailSheet({
                 boxShadow: "0 8px 30px rgba(0,0,0,0.12)",
               }}
             >
-              <p className="display-heading" style={{ fontSize: 17, marginBottom: 8 }}>
+              <p style={{ fontFamily: "var(--font-body)", fontSize: 16, fontWeight: 500, marginBottom: 8 }}>
                 Delete this entry?
               </p>
               <p className="body-small" style={{ color: "var(--text-secondary)", marginBottom: 20 }}>

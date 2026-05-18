@@ -1,4 +1,3 @@
-import { Card } from "../../design/Card";
 
 interface TypeDistributionProps {
   distribution: Record<string, number>;
@@ -18,18 +17,18 @@ export function TypeDistribution({ distribution }: TypeDistributionProps) {
   const total = Object.values(distribution).reduce((a, b) => a + b, 0);
   if (total === 0) {
     return (
-      <Card>
-        <span style={{ fontFamily: "var(--font-display)", fontSize: 17, fontWeight: 600, color: "var(--text-primary)", display: "block", marginBottom: 8 }}>
+      <div>
+        <span className="section-label" style={{ display: "block", marginBottom: 8 }}>
           Movement Types
         </span>
         <p style={{ fontFamily: "var(--font-body)", fontSize: 13, color: "var(--text-tertiary)" }}>No data yet.</p>
-      </Card>
+      </div>
     );
   }
 
   return (
-    <Card>
-      <span style={{ fontFamily: "var(--font-display)", fontSize: 17, fontWeight: 600, color: "var(--text-primary)", display: "block", marginBottom: 14 }}>
+    <div>
+      <span className="section-label" style={{ display: "block", marginBottom: 14 }}>
         Movement Types
       </span>
 
@@ -57,6 +56,6 @@ export function TypeDistribution({ distribution }: TypeDistributionProps) {
           );
         })}
       </div>
-    </Card>
+    </div>
   );
 }

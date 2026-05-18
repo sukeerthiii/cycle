@@ -1,6 +1,5 @@
 import { useState, useMemo } from "react";
 import { LineChart, Line, XAxis, YAxis, ResponsiveContainer } from "recharts";
-import { Card } from "../../design/Card";
 import { useDailyLogs, useExercises } from "../../db/hooks";
 import type { Phase, WorkoutSection } from "../../models/types";
 
@@ -111,20 +110,20 @@ export function ExerciseProgression() {
   const selectedExercise = strengthExercises.find((e) => e.id === selectedId);
 
   return (
-    <Card>
+    <div>
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 12 }}>
-        <span style={{ fontFamily: "var(--font-display)", fontSize: 17, fontWeight: 600, color: "var(--text-primary)" }}>
+        <span className="section-label">
           Progress
         </span>
         {selectedId && (
-          <div style={{ display: "flex", background: "var(--bg-deep)", borderRadius: "var(--radius-sm)", padding: 2 }}>
+          <div style={{ display: "flex", background: "rgba(255, 255, 255, 0.4)", borderRadius: "var(--radius-sm)", padding: 2, border: "1px solid rgba(255,255,255,0.5)" }}>
             {(["chart", "table"] as const).map((v) => (
               <button
                 key={v}
                 onClick={() => setView(v)}
                 style={{
                   padding: "4px 12px",
-                  background: view === v ? "var(--bg-elevated)" : "transparent",
+                  background: view === v ? "rgba(255,255,255,0.7)" : "transparent",
                   border: "none",
                   borderRadius: "var(--radius-sm)",
                   fontFamily: "var(--font-body)",
@@ -156,10 +155,13 @@ export function ExerciseProgression() {
                     fontSize: 12,
                     fontWeight: 500,
                     color: "var(--text-secondary)",
-                    background: "var(--bg-deep)",
-                    border: "none",
+                    background: "rgba(255, 255, 255, 0.5)",
+                    backdropFilter: "blur(8px)",
+                    WebkitBackdropFilter: "blur(8px)",
+                    border: "1px solid rgba(255, 255, 255, 0.6)",
                     borderRadius: "var(--radius-full)",
                     padding: "5px 12px",
+                    boxShadow: "0 1px 4px rgba(0,0,0,0.03)",
                     cursor: "pointer",
                     WebkitTapHighlightColor: "transparent",
                   }}
@@ -181,8 +183,8 @@ export function ExerciseProgression() {
               fontSize: 14,
               fontWeight: 400,
               color: "var(--text-primary)",
-              background: "var(--bg-primary)",
-              border: "none",
+              background: "rgba(255, 255, 255, 0.5)",
+              border: "1px solid rgba(255, 255, 255, 0.5)",
               borderRadius: "var(--radius-sm)",
               padding: "8px 12px",
               outline: "none",
@@ -201,7 +203,7 @@ export function ExerciseProgression() {
                   padding: "8px 0",
                   background: "none",
                   border: "none",
-                  borderBottom: "1px solid var(--bg-deep)",
+                  borderBottom: "1px solid rgba(0, 0, 0, 0.06)",
                   fontFamily: "var(--font-body)",
                   fontSize: 14,
                   fontWeight: 400,
@@ -245,7 +247,7 @@ export function ExerciseProgression() {
           )}
         </div>
       )}
-    </Card>
+    </div>
   );
 }
 
@@ -329,11 +331,13 @@ function TableView({ sessions }: { sessions: SessionData[] }) {
 const headerRowStyle: React.CSSProperties = {
   display: "flex",
   padding: "6px 0",
-  fontFamily: "var(--font-body)",
-  fontSize: 11,
+  fontFamily: "var(--font-mono)",
+  fontSize: 9,
   fontWeight: 500,
+  letterSpacing: "0.1em",
+  textTransform: "uppercase",
   color: "var(--text-tertiary)",
-  borderBottom: "1px solid var(--bg-deep)",
+  borderBottom: "1px solid rgba(0, 0, 0, 0.06)",
   marginBottom: 4,
 };
 
@@ -345,5 +349,5 @@ const rowStyle: React.CSSProperties = {
   fontSize: 13,
   fontWeight: 400,
   color: "var(--text-primary)",
-  borderBottom: "1px solid var(--bg-deep)",
+  borderBottom: "1px solid rgba(0, 0, 0, 0.06)",
 };

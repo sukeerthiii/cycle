@@ -1,5 +1,4 @@
 import { useState, useMemo } from "react";
-import { Card } from "../../design/Card";
 import { useDailyLogs } from "../../db/hooks";
 import { calculatePhase } from "../../engine/phaseEngine";
 import type { Phase } from "../../models/types";
@@ -29,7 +28,10 @@ function getMonday(d: Date): Date {
 }
 
 function toISO(d: Date): string {
-  return d.toISOString().split("T")[0]!;
+  const y = d.getFullYear();
+  const m = String(d.getMonth() + 1).padStart(2, "0");
+  const day = String(d.getDate()).padStart(2, "0");
+  return `${y}-${m}-${day}`;
 }
 
 function formatWeekRange(monday: Date): string {
@@ -73,13 +75,15 @@ export function StepsGraph({ periodStartDate, cycleLength, periodLength }: Steps
     return result;
   }, [logs, monday, periodStartDate, cycleLength, periodLength]);
 
-  const maxSteps = Math.max(...days.map((d) => d.steps), 10000);
+  const highestSteps = Math.max(...days.map((d) => d.steps));
+  const highestTarget = Math.max(...days.map((d) => d.target));
+  const maxSteps = Math.max(highestSteps, highestTarget, 1);
   const isCurrentWeek = weekOffset === 0;
 
   return (
-    <Card>
+    <div>
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 14 }}>
-        <span style={{ fontFamily: "var(--font-display)", fontSize: 17, fontWeight: 600, color: "var(--text-primary)" }}>
+        <span className="section-label">
           Steps
         </span>
         <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
@@ -136,7 +140,7 @@ export function StepsGraph({ periodStartDate, cycleLength, periodLength }: Steps
           </div>
         ))}
       </div>
-    </Card>
+    </div>
   );
 }
 

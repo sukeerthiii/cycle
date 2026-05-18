@@ -26,14 +26,7 @@ export function PatternChecklist({ patternsHit, phase }: PatternChecklistProps) 
 
   return (
     <div>
-      <span style={{
-        fontFamily: "var(--font-display)",
-        fontSize: 16,
-        fontWeight: 600,
-        color: "var(--text-primary)",
-        display: "block",
-        marginBottom: 10,
-      }}>
+      <span className="section-label" style={{ display: "block", marginBottom: 10 }}>
         Strength Weekly Split
       </span>
       <div style={{ display: "flex", gap: 12, justifyContent: "center" }}>

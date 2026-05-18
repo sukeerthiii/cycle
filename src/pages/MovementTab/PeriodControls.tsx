@@ -5,7 +5,10 @@ import { addCycleLog, useLatestCycleLog, updateCycleLog } from "../../db/hooks";
 export function PeriodControls() {
   const latestCycle = useLatestCycleLog();
   const [showDatePicker, setShowDatePicker] = useState<"start" | "end" | null>(null);
-  const [pickedDate, setPickedDate] = useState(() => new Date().toISOString().split("T")[0]!);
+  const [pickedDate, setPickedDate] = useState(() => {
+    const d = new Date();
+    return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
+  });
 
   const periodActive = latestCycle && !latestCycle.periodEndDate;
 
@@ -77,13 +80,16 @@ export function PeriodControls() {
               style={{
                 width: "100%",
                 maxWidth: 420,
-                background: "var(--bg-primary)",
+                background: "rgba(255, 255, 255, 0.6)",
+                backdropFilter: "blur(30px)",
+                WebkitBackdropFilter: "blur(30px)",
                 borderRadius: "20px 20px 0 0",
+                border: "1px solid rgba(255, 255, 255, 0.6)",
+                boxShadow: "0 -4px 24px rgba(0, 0, 0, 0.06), inset 0 1px 0 rgba(255, 255, 255, 0.5)",
                 padding: "24px 20px calc(24px + env(safe-area-inset-bottom))",
-                boxShadow: "0 -4px 20px rgba(0,0,0,0.08)",
               }}
             >
-              <p className="display-heading" style={{ marginBottom: 16, fontSize: 18 }}>
+              <p style={{ fontFamily: "var(--font-body)", fontSize: 16, fontWeight: 500, marginBottom: 16 }}>
                 {showDatePicker === "start" ? "Period started" : "Period ended"}
               </p>
 

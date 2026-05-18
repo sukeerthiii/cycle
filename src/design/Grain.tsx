@@ -8,7 +8,7 @@ export function GrainOverlay() {
     if (!canvas) return;
 
     const dpr = window.devicePixelRatio || 1;
-    const size = Math.round(256 * dpr);
+    const size = Math.round(300 * dpr);
     canvas.width = size;
     canvas.height = size;
     const ctx = canvas.getContext("2d");
@@ -18,10 +18,10 @@ export function GrainOverlay() {
     const data = imageData.data;
 
     for (let i = 0; i < data.length; i += 4) {
-      const v = Math.random() * 180 + 40;
-      data[i] = v;
-      data[i + 1] = v - 3;
-      data[i + 2] = v - 6;
+      const base = Math.random() * 160 + 60;
+      data[i] = base + 15;
+      data[i + 1] = base + 8;
+      data[i + 2] = base - 5;
       data[i + 3] = 255;
     }
 
@@ -39,8 +39,8 @@ export function GrainOverlay() {
         height: "100%",
         pointerEvents: "none",
         zIndex: 9999,
-        opacity: 0.06,
-        mixBlendMode: "multiply",
+        opacity: 0.18,
+        mixBlendMode: "soft-light",
       }}
     />
   );

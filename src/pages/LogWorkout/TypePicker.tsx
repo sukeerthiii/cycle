@@ -15,12 +15,6 @@ const phaseColorMap: Record<Phase, string> = {
   luteal: "var(--phase-luteal)",
 };
 
-const phaseMutedMap: Record<Phase, string> = {
-  menstrual: "var(--phase-menstrual-muted)",
-  follicular: "var(--phase-follicular-muted)",
-  ovulatory: "var(--phase-ovulatory-muted)",
-  luteal: "var(--phase-luteal-muted)",
-};
 
 const workoutTypes: { type: WorkoutType; label: string }[] = [
   { type: "strength", label: "Strength" },
@@ -35,7 +29,6 @@ const workoutTypes: { type: WorkoutType; label: string }[] = [
 export function TypePicker({ onSelect, onClose, suggestion, phase }: TypePickerProps) {
   const suggestedType = suggestion?.type ?? null;
   const color = phaseColorMap[phase];
-  const muted = phaseMutedMap[phase];
 
   return (
     <motion.div
@@ -64,13 +57,16 @@ export function TypePicker({ onSelect, onClose, suggestion, phase }: TypePickerP
         style={{
           width: "100%",
           maxWidth: 420,
-          background: "var(--bg-primary)",
+          background: "rgba(255, 255, 255, 0.6)",
+          backdropFilter: "blur(30px)",
+          WebkitBackdropFilter: "blur(30px)",
           borderRadius: "20px 20px 0 0",
+          border: "1px solid rgba(255, 255, 255, 0.6)",
+          boxShadow: "0 -4px 24px rgba(0, 0, 0, 0.06), inset 0 1px 0 rgba(255, 255, 255, 0.5)",
           padding: `24px 20px calc(24px + var(--tab-bar-height) + env(safe-area-inset-bottom))`,
-          boxShadow: "0 -4px 20px rgba(0,0,0,0.08)",
         }}
       >
-        <p className="display-heading" style={{ marginBottom: 6 }}>
+        <p className="section-label" style={{ marginBottom: 6, fontSize: 11 }}>
           Log Movement
         </p>
 
@@ -95,9 +91,12 @@ export function TypePicker({ onSelect, onClose, suggestion, phase }: TypePickerP
                 textAlign: "left",
                 padding: "14px 16px",
                 marginBottom: 8,
-                background: isSuggested ? muted : "var(--bg-elevated)",
-                border: isSuggested ? `1px solid ${color}` : "none",
+                background: isSuggested ? "rgba(255, 255, 255, 0.5)" : "rgba(255, 255, 255, 0.35)",
+                backdropFilter: "blur(12px)",
+                WebkitBackdropFilter: "blur(12px)",
+                border: isSuggested ? `1px solid ${color}` : "1px solid rgba(255, 255, 255, 0.5)",
                 borderRadius: "var(--radius-md)",
+                boxShadow: "0 1px 6px rgba(0, 0, 0, 0.03), inset 0 1px 0 rgba(255, 255, 255, 0.4)",
                 fontFamily: "var(--font-body)",
                 fontSize: 16,
                 fontWeight: isSuggested ? 600 : 500,

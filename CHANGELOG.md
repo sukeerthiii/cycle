@@ -1,67 +1,87 @@
 # Changelog
 
-## v0.2.0 — Design System Overhaul + Pulse Redesign
+## v0.4.0 — UI Redesign + v0.3 Features
 
-Changes since v0.1.0 (all tabs and core logic).
+### Design System Overhaul
 
-### Design System
-
-- Switched from dark mode to light journal theme (#FAF7F4 warm paper background)
-- Font split: EB Garamond for headings/display, DM Sans for body/UI
-- Phase colors now dynamic throughout the entire app — FAB, tabs, steppers, buttons, progress bars all change per cycle phase
-- Calendar phase fills increased to 20% opacity with subtle borders
-- Phase ring glow intensified (wider spread, stronger blur)
-- Card left-stripe removed, replaced with soft warm shadows
-- Grain overlay adjusted for light mode (multiply blend)
-- Active tab label colors follow current phase instead of static gold
+- Three-font system: IBM Plex Mono (labels), Cormorant Garamond (available for display), Inter (body/values/UI)
+- Monospace uppercase tracked labels throughout ("CYCLE PHASE", "STEPS", "FUEL", "ANATOMY")
+- Phase gradient backgrounds: multi-color radial gradient with all four phase colors, dominant color shifts per cycle phase
+- Warm-toned grain overlay (amber/brown noise, soft-light blend, 18% opacity) visible across all pages
+- Contrast color set added: menstrual-contrast (cool blue), follicular-contrast (warm coral), ovulatory-contrast (slate blue), luteal-contrast (sage green)
+- Two-tone gradient progress bars (primary-to-contrast) for cycle and step progress
+- Glassmorphism everywhere: frosted glass cards, sheets, tab bar, FAB, settings, logging screens
+- Glossy shadow on all glass surfaces (outer shadow + inner white highlight)
+- Phase line illustrations: drop (menstrual), sprout (follicular), sun (ovulatory), moon (luteal)
+- Pure white base background (#FAFAF8), no more beige/cream
+- App icon updated to gradient loop motif
 
 ### Today Tab
 
-- Added "Today" heading with date and day
-- "Day" micro-label above cycle day number in ring
-- Step goal is now dynamic: 10K in follicular/ovulatory, 8K in menstrual/luteal
-- Steps number in Garamond, label in DM Sans
-- Cards renamed: "Why" → "Anatomy", "Nutrition" → "Fuel", context → "Phase"
-- Fuel and Anatomy cards are side-by-side, independently collapsible
-- Card headings in Garamond 17px, body text in DM Sans 14px
+- Full-bleed multi-color gradient at top (~42vh), all text below on white
+- "CYCLE PHASE" monospace label + date
+- Phase name as hero element (20px, 600 weight, phase-colored)
+- "Day X of Y" as secondary text
+- All data sections in glassy cards with phase-tinted backgrounds
+- Settings changed from text to gear icon (line art)
+- Removed: phase ring, "Shades of..." subtitle, redundant Phase/Day section
 
 ### Map Tab
 
-- Calendar phase colors softened for light background
-- "Weekly Split" heading in Garamond
-- Day sheet buttons/flows use the tapped day's phase color (not today's)
-- "Add Movement" / "Plan Movement" capitalized and phase-colored
-- Period end button now sage green (was gray)
-- Edit and Delete are side-by-side text buttons on workout cards
-- Steps card has Edit/Delete controls
-- Duration displayed under workout type heading
+- Soft multi-color PageBackground gradient (radial blobs at ~22% opacity)
+- Calendar, weekly split, period controls, weekly planner all in frosted glass cards
+- Softer calendar phase fills (10% opacity), workout dots use contrast colors
 
-### Pulse Tab (redesigned)
+### Pulse Tab
 
-- Removed: stats row (compliance, sessions, volume), rhythm heatmap
-- Added: "Pulse" heading with "Day X · Phase" subtitle
-- Steps graph: weekly bar chart, phase-colored bars, prev/next week navigation, target line
-- Progress card: pick an exercise, toggle between line chart and table view
-- Exercise History moved here from the Log tab
-- Volume by Phase and Movement Types cards retained with Garamond titles
-- Renamed "Workout Types" → "Movement Types"
+- Soft PageBackground gradient, glass chart sections with glossy shadow
+- Quick-pick exercise chips now frosted glass pills (no more beige)
+- Search input, toggles all glassmorphed
+- Table headers in monospace
 
-### Log Tab (simplified)
+### Log Tab
 
-- Removed Exercise History (now lives in Pulse)
-- Removed segmented control
-- Clean "Log" heading + Movement History table only
-- Renamed "Workout History" → "Movement History"
+- PageBackground gradient, table in frosted glass card
+- Monospace table headers
 
-### Logging
+### FAB
 
-- Added Cardio as 6th workout type (duration + notes, same flow as pilates/yoga)
-- All logging flows (strength, session, walk, cardio) use the date's phase color for controls
-- FAB type picker highlights suggested workout in phase color
-- Tab names: Cycle/Movement/Trends/History → Today/Map/Pulse/Log
-- FAB heading: "Log workout" → "Log Movement"
-- Settings page controls use phase color (was gold)
+- Smaller (48px), phase-gradient tinted glass, stronger blur + saturation
+- Outlined style with phase-colored + icon
 
-### Tabs
+### All Sheets & Logging Screens
 
-- Renamed: Cycle → Today, Movement → Map, Trends → Pulse, History → Log
+- Frosted glass (blur 30px, translucent white, white border, glossy shadow)
+- Type picker buttons now individually glassmorphed
+- All logging screens (strength, session, walk, running, exercise search) frosted glass fullscreen
+
+### Tab Bar
+
+- Frosted glass with blur, monospace labels
+- Active tab indicated by phase-colored dot
+
+### v0.3 Features (included in this release)
+
+- CSV export includes per-exercise rows with set detail (10x50, 8xBW)
+- Strength log pre-fills previous session's reps/weight
+- Steps editable inline on Log tab (tap the steps column)
+- 60+ new exercises: dumbbell, resistance band, bodyweight variations
+- Running with interval logging (run/walk blocks) + stacked bar progress chart
+- Weekly Plan notepad on Map tab
+- Progress card quick-pick chips (top 5 most-logged exercises)
+- Cardio added as workout type
+- Volume by Phase removed from Pulse
+- Grain texture scales to device pixel ratio
+
+### Bug Fixes
+
+- Fixed timezone bug: all date calculations now use local time instead of UTC (was causing data mismatches after 5pm PST)
+- Fixed steps graph not showing data (scale was hardcoded to 10000 minimum)
+
+## v0.2.0 — Design System Overhaul + Pulse Redesign
+
+(see previous changelog entry)
+
+## v0.1.0 — All Tabs and Core Logic
+
+(initial release)

@@ -202,11 +202,13 @@ export function WorkoutHistory() {
 const headerRowStyle: React.CSSProperties = {
   display: "flex",
   padding: "8px 12px",
-  fontFamily: "var(--font-body)",
-  fontSize: 12,
+  fontFamily: "var(--font-mono)",
+  fontSize: 9,
   fontWeight: 500,
+  letterSpacing: "0.12em",
+  textTransform: "uppercase",
   color: "var(--text-tertiary)",
-  borderBottom: "1px solid var(--bg-elevated)",
+  borderBottom: "1px solid var(--bg-deep)",
   marginBottom: 4,
 };
 

@@ -39,7 +39,8 @@ interface LogState {
 }
 
 function todayISO() {
-  return new Date().toISOString().split("T")[0]!;
+  const d = new Date();
+  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
 }
 
 export default function App() {
@@ -289,12 +290,16 @@ export default function App() {
             className="tab-item"
             onClick={() => setActiveTab(tab)}
           >
-            <span
-              className="tab-label"
-              style={activeTab === tab ? { color: `var(--phase-${phase})` } : undefined}
-            >
+            <span className="tab-label">
               {tab}
             </span>
+            <div
+              className="tab-dot"
+              style={{
+                background: activeTab === tab ? `var(--phase-${phase})` : "transparent",
+                opacity: activeTab === tab ? 1 : 0,
+              }}
+            />
           </button>
         ))}
       </nav>

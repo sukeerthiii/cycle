@@ -1,6 +1,5 @@
 import { useMemo } from "react";
 import { BarChart, Bar, XAxis, YAxis, ResponsiveContainer } from "recharts";
-import { Card } from "../../design/Card";
 import { useDailyLogs } from "../../db/hooks";
 import type { WorkoutSection, Phase } from "../../models/types";
 
@@ -53,14 +52,14 @@ export function RunningProgress() {
 
   if (sessions.length === 0) {
     return (
-      <Card>
-        <span style={{ fontFamily: "var(--font-display)", fontSize: 17, fontWeight: 600, color: "var(--text-primary)", display: "block", marginBottom: 8 }}>
+      <div>
+        <span className="section-label" style={{ display: "block", marginBottom: 8 }}>
           Running
         </span>
         <p style={{ fontFamily: "var(--font-body)", fontSize: 13, color: "var(--text-tertiary)" }}>
           Log your first run to see progress.
         </p>
-      </Card>
+      </div>
     );
   }
 
@@ -74,9 +73,9 @@ export function RunningProgress() {
   const latestPct = sessions[sessions.length - 1]?.runPct ?? 0;
 
   return (
-    <Card>
+    <div>
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 12 }}>
-        <span style={{ fontFamily: "var(--font-display)", fontSize: 17, fontWeight: 600, color: "var(--text-primary)" }}>
+        <span className="section-label">
           Running
         </span>
         <span style={{ fontFamily: "var(--font-body)", fontSize: 12, color: "var(--text-secondary)" }}>
@@ -109,7 +108,7 @@ export function RunningProgress() {
         <Legend color="#8BA888" label="Run" />
         <Legend color="#E0DAD4" label="Walk" />
       </div>
-    </Card>
+    </div>
   );
 }
 

@@ -87,7 +87,9 @@ export function ExerciseSearch({
       style={{
         position: "fixed",
         inset: 0,
-        background: "var(--bg-primary)",
+        background: "rgba(255, 255, 255, 0.75)",
+        backdropFilter: "blur(24px)",
+        WebkitBackdropFilter: "blur(24px)",
         zIndex: 400,
         display: "flex",
         flexDirection: "column",

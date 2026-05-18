@@ -19,10 +19,12 @@ export function CollapsibleCard({
     <Card onClick={() => setOpen(!open)} style={{ cursor: "pointer" }}>
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
         <span style={{
-          fontFamily: "var(--font-display)",
-          fontSize: 17,
-          fontWeight: 600,
-          color: "var(--text-primary)",
+          fontFamily: "var(--font-mono)",
+          fontSize: 10,
+          fontWeight: 500,
+          letterSpacing: "0.12em",
+          textTransform: "uppercase" as const,
+          color: "var(--text-secondary)",
         }}>
           {title}
         </span>

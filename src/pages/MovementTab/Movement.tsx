@@ -5,6 +5,7 @@ import { PatternChecklist } from "./PatternChecklist";
 import { DayDetailSheet } from "./DayDetailSheet";
 import { PeriodControls } from "./PeriodControls";
 import { Card } from "../../design/Card";
+import { PageBackground } from "../../design/PageBackground";
 import { calculatePhase } from "../../engine/phaseEngine";
 import { useLatestCycleLog, useDailyLogs, useSetting, setSetting } from "../../db/hooks";
 import type { Phase, WorkoutSection, WorkoutType, MovementPattern } from "../../models/types";
@@ -18,8 +19,12 @@ interface MovementProps {
   onDeleteSteps: (date: string) => void;
 }
 
+function toLocal(d: Date): string {
+  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
+}
+
 function todayISO() {
-  return new Date().toISOString().split("T")[0]!;
+  return toLocal(new Date());
 }
 
 function startOfWeekISO(): string {
@@ -27,7 +32,7 @@ function startOfWeekISO(): string {
   const day = d.getDay();
   const diff = d.getDate() - day + (day === 0 ? -6 : 1);
   d.setDate(diff);
-  return d.toISOString().split("T")[0]!;
+  return toLocal(d);
 }
 
 function endOfWeekISO(): string {
@@ -35,7 +40,7 @@ function endOfWeekISO(): string {
   const day = d.getDay();
   const diff = d.getDate() - day + (day === 0 ? 0 : 7);
   d.setDate(diff);
-  return d.toISOString().split("T")[0]!;
+  return toLocal(d);
 }
 
 export function Movement({ onAddWorkout, onEditSection, onDeleteSection, onPlanWorkout, onEditSteps, onDeleteSteps }: MovementProps) {
@@ -110,37 +115,38 @@ export function Movement({ onAddWorkout, onEditSection, onDeleteSection, onPlanW
     return dates;
   }, [monthLogs]);
 
-  return (
-    <div style={{ padding: "16px 16px 32px" }}>
-      <MonthCalendar
-        year={viewMonth.year}
-        month={viewMonth.month}
-        today={today}
-        getPhase={getPhaseForDate}
-        loggedDates={loggedDates}
-        onSelectDate={setSelectedDate}
-        onChangeMonth={(year, month) => setViewMonth({ year, month })}
-      />
+  const currentPhase = getPhaseForDate(todayISO()) ?? "follicular" as Phase;
 
-      <div style={{ marginTop: 20 }}>
-        <PatternChecklist patternsHit={patternsHit} phase={getPhaseForDate(todayISO()) ?? "follicular"} />
+  return (
+    <div style={{ position: "relative", minHeight: "100%", background: "#FAFAF8" }}>
+      <PageBackground phase={currentPhase} />
+      <div style={{ position: "relative", zIndex: 1, padding: "20px 16px 32px" }}>
+      <Card>
+        <MonthCalendar
+          year={viewMonth.year}
+          month={viewMonth.month}
+          today={today}
+          getPhase={getPhaseForDate}
+          loggedDates={loggedDates}
+          onSelectDate={setSelectedDate}
+          onChangeMonth={(year, month) => setViewMonth({ year, month })}
+        />
+      </Card>
+
+      <div style={{ marginTop: 16 }}>
+        <Card>
+          <PatternChecklist patternsHit={patternsHit} phase={getPhaseForDate(todayISO()) ?? "follicular"} />
+        </Card>
       </div>
 
-      <div style={{ marginTop: 24 }}>
+      <div style={{ marginTop: 16 }}>
         <PeriodControls />
       </div>
 
       {/* Weekly planner */}
       <div style={{ marginTop: 24 }}>
         <Card>
-          <span style={{
-            fontFamily: "var(--font-display)",
-            fontSize: 17,
-            fontWeight: 600,
-            color: "var(--text-primary)",
-            display: "block",
-            marginBottom: 10,
-          }}>
+          <span className="section-label" style={{ display: "block", marginBottom: 10 }}>
             Weekly Plan
           </span>
           <textarea
@@ -184,6 +190,7 @@ export function Movement({ onAddWorkout, onEditSection, onDeleteSection, onPlanW
           />
         )}
       </AnimatePresence>
+      </div>
     </div>
   );
 }

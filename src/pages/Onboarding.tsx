@@ -39,7 +39,11 @@ export function Onboarding({ onComplete }: OnboardingProps) {
       justifyContent: "center",
       padding: "32px 24px",
       paddingTop: "calc(32px + env(safe-area-inset-top))",
-      background: "var(--bg-primary)",
+      background: `
+        radial-gradient(ellipse 80% 60% at 50% 30%, rgba(212, 168, 67, 0.15) 0%, transparent 60%),
+        radial-gradient(ellipse 60% 50% at 30% 40%, rgba(155, 126, 155, 0.1) 0%, transparent 55%),
+        linear-gradient(180deg, #FDF6EE 0%, var(--bg-primary) 100%)
+      `,
       color: "var(--text-primary)",
       maxWidth: 420,
       margin: "0 auto",
@@ -51,10 +55,10 @@ export function Onboarding({ onComplete }: OnboardingProps) {
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5 }}
       >
-        <h1 className="display-heading" style={{ marginBottom: 8 }}>
+        <h1 style={{ fontFamily: "var(--font-display)", fontSize: 32, fontWeight: 300, marginBottom: 8 }}>
           Cycle
         </h1>
-        <p className="body-primary" style={{ color: "var(--text-secondary)", marginBottom: 48 }}>
+        <p style={{ fontFamily: "var(--font-mono)", fontSize: 10, fontWeight: 500, letterSpacing: "0.12em", textTransform: "uppercase" as const, color: "var(--text-secondary)", marginBottom: 48 }}>
           Three things, then we're in.
         </p>
 

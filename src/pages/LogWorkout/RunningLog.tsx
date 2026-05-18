@@ -58,7 +58,7 @@ export function RunningLog({ onSave, onClose, initialData, phase }: RunningLogPr
   }
 
   return (
-    <div style={{ position: "fixed", inset: 0, background: "var(--bg-primary)", zIndex: 350, display: "flex", flexDirection: "column" }}>
+    <div style={{ position: "fixed", inset: 0, background: "rgba(255, 255, 255, 0.75)", backdropFilter: "blur(24px)", WebkitBackdropFilter: "blur(24px)", zIndex: 350, display: "flex", flexDirection: "column" }}>
       <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "16px 20px" }}>
         <button onClick={onClose} style={headerBtnStyle}>Cancel</button>
         <span className="display-heading" style={{ fontSize: 18 }}>Running</span>

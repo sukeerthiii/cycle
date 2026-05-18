@@ -19,17 +19,24 @@ const MONTH_NAMES = [
 ];
 
 const phaseColors: Record<Phase, string> = {
+  menstrual: "rgba(196, 112, 90, 0.10)",
+  follicular: "rgba(139, 168, 136, 0.10)",
+  ovulatory: "rgba(212, 168, 67, 0.10)",
+  luteal: "rgba(155, 126, 155, 0.10)",
+};
+
+const phaseBorderColors: Record<Phase, string> = {
   menstrual: "rgba(196, 112, 90, 0.20)",
   follicular: "rgba(139, 168, 136, 0.20)",
   ovulatory: "rgba(212, 168, 67, 0.20)",
   luteal: "rgba(155, 126, 155, 0.20)",
 };
 
-const phaseBorderColors: Record<Phase, string> = {
-  menstrual: "rgba(196, 112, 90, 0.35)",
-  follicular: "rgba(139, 168, 136, 0.35)",
-  ovulatory: "rgba(212, 168, 67, 0.35)",
-  luteal: "rgba(155, 126, 155, 0.35)",
+const contrastDotColors: Record<Phase, string> = {
+  menstrual: "var(--phase-menstrual-contrast)",
+  follicular: "var(--phase-follicular-contrast)",
+  ovulatory: "var(--phase-ovulatory-contrast)",
+  luteal: "var(--phase-luteal-contrast)",
 };
 
 function toISO(year: number, month: number, day: number): string {
@@ -85,7 +92,7 @@ export function MonthCalendar({
         marginBottom: 16,
       }}>
         <button onClick={prevMonth} style={navBtnStyle}>‹</button>
-        <span className="display-heading" style={{ fontSize: 18 }}>
+        <span style={{ fontFamily: "var(--font-body)", fontSize: 16, fontWeight: 500 }}>
           {MONTH_NAMES[month]} {year}
         </span>
         <button onClick={nextMonth} style={navBtnStyle}>›</button>
@@ -148,12 +155,12 @@ export function MonthCalendar({
                 }}>
                   {day}
                 </span>
-                {hasLog && (
+                {hasLog && phase && (
                   <div style={{
                     width: 4,
                     height: 4,
                     borderRadius: 2,
-                    background: "var(--accent)",
+                    background: contrastDotColors[phase],
                     marginTop: 2,
                   }} />
                 )}

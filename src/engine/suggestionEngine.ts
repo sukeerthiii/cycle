@@ -1,3 +1,7 @@
+function localISO(d: Date): string {
+  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
+}
+
 import type {
   Phase,
   WorkoutType,
@@ -267,8 +271,8 @@ async function buildContext(today: string): Promise<RecentContext> {
   const sunday = new Date(monday);
   sunday.setDate(monday.getDate() + 6);
 
-  const weekStart = monday.toISOString().split("T")[0]!;
-  const weekEnd = sunday.toISOString().split("T")[0]!;
+  const weekStart = localISO(monday);
+  const weekEnd = localISO(sunday);
 
   const weekLogs = await db.dailyLogs
     .where("date")
@@ -303,7 +307,7 @@ async function buildContext(today: string): Promise<RecentContext> {
   // Yesterday
   const yesterday = new Date(todayDate);
   yesterday.setDate(todayDate.getDate() - 1);
-  const yesterdayStr = yesterday.toISOString().split("T")[0]!;
+  const yesterdayStr = localISO(yesterday);
   const yesterdayLog = weekLogs.find((l) => l.date === yesterdayStr);
   const yesterdayWasStrength = parseSections(yesterdayLog?.sections).some(
     (s) => s.type === "strength"

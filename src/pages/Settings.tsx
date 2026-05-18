@@ -63,7 +63,9 @@ export function Settings({ onClose, phase }: SettingsProps) {
       style={{
         position: "fixed",
         inset: 0,
-        background: "var(--bg-primary)",
+        background: "rgba(255, 255, 255, 0.65)",
+        backdropFilter: "blur(30px)",
+        WebkitBackdropFilter: "blur(30px)",
         zIndex: 400,
         overflowY: "auto",
       }}
@@ -71,7 +73,7 @@ export function Settings({ onClose, phase }: SettingsProps) {
       <div style={{ padding: "16px 20px", maxWidth: 420, margin: "0 auto" }}>
         {/* Header */}
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 28 }}>
-          <span className="display-heading">Settings</span>
+          <span className="section-label" style={{ fontSize: 11 }}>Settings</span>
           <button onClick={onClose} style={{
             background: "none",
             border: "none",
@@ -153,8 +155,12 @@ function Section({ title, children }: { title: string; children: React.ReactNode
         {title}
       </span>
       <div style={{
-        background: "var(--bg-elevated)",
+        background: "rgba(255, 255, 255, 0.5)",
+        backdropFilter: "blur(16px)",
+        WebkitBackdropFilter: "blur(16px)",
         borderRadius: "var(--radius-lg)",
+        border: "1px solid rgba(255, 255, 255, 0.5)",
+        boxShadow: "0 2px 12px rgba(0, 0, 0, 0.04), inset 0 1px 0 rgba(255, 255, 255, 0.4)",
         overflow: "hidden",
       }}>
         {children}

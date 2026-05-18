@@ -16,7 +16,7 @@ export async function calculateCompliance(
 ): Promise<ComplianceResult> {
   const today = new Date();
   today.setHours(0, 0, 0, 0);
-  const todayStr = today.toISOString().split("T")[0]!;
+  const todayStr = `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, "0")}-${String(today.getDate()).padStart(2, "0")}`;
 
   const { cycleDay } = calculatePhase(periodStartDate, cycleLength, periodLength);
   const daysToCheck = cycleDay - 1; // don't count today
@@ -31,7 +31,7 @@ export async function calculateCompliance(
   for (let d = 1; d < cycleDay; d++) {
     const date = new Date(periodStartDate + "T00:00:00");
     date.setDate(date.getDate() + d - 1);
-    const dateStr = date.toISOString().split("T")[0]!;
+    const dateStr = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, "0")}-${String(date.getDate()).padStart(2, "0")}`;
     if (dateStr >= todayStr) break;
 
     const phase = calculatePhase(periodStartDate, cycleLength, periodLength, dateStr).phase;
