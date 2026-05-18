@@ -96,8 +96,8 @@ export function CycleHome({
           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
             <div>
               <span style={{
-                fontFamily: "var(--font-body)", fontSize: 22, fontWeight: 600,
-                color: "var(--text-primary)", letterSpacing: "0.02em",
+                fontFamily: "var(--font-body)", fontSize: 22, fontWeight: 700,
+                color: `var(--phase-${phase})`, letterSpacing: "0.02em",
                 display: "block", marginBottom: 4,
               }}>
                 {phaseLabels[phase]}
